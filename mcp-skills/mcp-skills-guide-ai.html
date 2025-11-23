@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP + Skills Integration - AI-Optimized</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Share Tech Mono', monospace; background: #0f172a; color: #e2e8f0; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; }
+        .ai-card { background: #1e293b; border: 2px solid #f59e0b; border-radius: 8px; }
+        code { background: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="text-4xl mb-2">🤖</div>
+            <h1 class="text-4xl font-bold text-amber-400 mb-2">MCP + Skills Integration</h1>
+            <p class="text-slate-400">AI-OPTIMIZED SPECIFICATIONS (Post Nov 25, 2025)</p>
+        </header>
+
+        <!-- DECISION TREE -->
+        <div class="ai-card p-6 mb-6">
+            <h2 class="text-xl text-amber-300 mb-4 border-b border-amber-600 pb-2">🤖 WHEN TO USE WHAT (DECISION TREE)</h2>
+            <div class="space-y-3 text-sm">
+                <div class="p-3 bg-black/30 rounded border-l-4 border-cyan-500">
+                    <div class="text-cyan-400 font-bold">IF need to ACCESS external data/systems:</div>
+                    <div class="ml-4 mt-1">→ Use <span class="text-cyan-400 font-bold">MCP</span> (databases, APIs, files, services)</div>
+                </div>
+                <div class="p-3 bg-black/30 rounded border-l-4 border-purple-500">
+                    <div class="text-purple-400 font-bold">IF need to PROCESS/ANALYZE data:</div>
+                    <div class="ml-4 mt-1">→ Use <span class="text-purple-400 font-bold">Skills</span> (business logic, workflows, formatting)</div>
+                </div>
+                <div class="p-3 bg-black/30 rounded border-l-4 border-emerald-500">
+                    <div class="text-emerald-400 font-bold">IF need END-TO-END automation:</div>
+                    <div class="ml-4 mt-1">→ Use <span class="text-emerald-400 font-bold">Both</span>: MCP fetches → Skill processes → Output</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CODE EXECUTION PATTERN -->
+        <div class="ai-card p-6 mb-6">
+            <h2 class="text-xl text-amber-300 mb-4 border-b border-amber-600 pb-2">🤖 CODE EXECUTION PATTERN (MANDATORY)</h2>
+
+            <div class="bg-black/50 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// ALWAYS use code execution pattern for MCP calls</span>
+<span class="text-slate-500">// NEVER load all tool definitions into context</span>
+
+<span class="text-purple-400">async function</span> <span class="text-cyan-400">processWithMCP</span>() {
+  <span class="text-slate-500">// 1. Call MCP in sandbox</span>
+  <span class="text-purple-400">const</span> rawData = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">server</span>.<span class="text-yellow-400">fetchData</span>(params);
+
+  <span class="text-slate-500">// 2. Process in sandbox (NOT in context)</span>
+  <span class="text-purple-400">const</span> filtered = rawData.<span class="text-cyan-400">filter</span>(item => item.relevant);
+  <span class="text-purple-400">const</span> summary = <span class="text-cyan-400">summarize</span>(filtered);
+
+  <span class="text-slate-500">// 3. Return ONLY summary to model</span>
+  <span class="text-purple-400">return</span> {
+    count: filtered.length,
+    summary: summary,
+    <span class="text-slate-500">// NOT: rawData (too large!)</span>
+  };
+}
+                </pre>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-xs">
+                <div class="p-3 bg-green-900/30 border border-green-600 rounded">
+                    <div class="text-green-400 font-bold">✓ CORRECT:</div>
+                    <ul class="text-slate-300 mt-1 space-y-1">
+                        <li>• Process data in sandbox</li>
+                        <li>• Return summaries only</li>
+                        <li>• Load tools on-demand</li>
+                    </ul>
+                </div>
+                <div class="p-3 bg-red-900/30 border border-red-600 rounded">
+                    <div class="text-red-400 font-bold">✗ WRONG:</div>
+                    <ul class="text-slate-300 mt-1 space-y-1">
+                        <li>• Pass raw data to model</li>
+                        <li>• Load all tools upfront</li>
+                        <li>• Return full datasets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ASYNC OPERATIONS -->
+        <div class="ai-card p-6 mb-6">
+            <h2 class="text-xl text-amber-300 mb-4 border-b border-amber-600 pb-2">🤖 ASYNC OPERATIONS PATTERN</h2>
+
+            <div class="bg-black/50 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Pattern for long-running operations (>30 seconds)</span>
+
+<span class="text-slate-500">// STEP 1: Start async task</span>
+<span class="text-purple-400">const</span> taskId = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">server</span>.<span class="text-yellow-400">startAsync</span>({
+  operation: <span class="text-green-400">'analyze'</span>,
+  params: {...}
+});
+
+<span class="text-slate-500">// STEP 2: Task runs independently (no blocking)</span>
+
+<span class="text-slate-500">// STEP 3: Poll for completion</span>
+<span class="text-purple-400">let</span> status;
+<span class="text-purple-400">do</span> {
+  status = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">server</span>.<span class="text-yellow-400">checkStatus</span>(taskId);
+  <span class="text-purple-400">if</span> (!status.complete) {
+    <span class="text-purple-400">await</span> <span class="text-cyan-400">sleep</span>(<span class="text-orange-400">5000</span>); <span class="text-slate-500">// Wait 5s</span>
+  }
+} <span class="text-purple-400">while</span> (!status.complete);
+
+<span class="text-slate-500">// STEP 4: Retrieve results</span>
+<span class="text-purple-400">const</span> results = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">server</span>.<span class="text-yellow-400">getResults</span>(taskId);
+                </pre>
+            </div>
+
+            <div class="p-3 bg-amber-900/30 border border-amber-600 rounded text-xs">
+                <span class="text-amber-400 font-bold">RULE:</span>
+                <span class="text-amber-200"> Always use async pattern for: data analysis, report generation, batch operations, ML inference, web scraping</span>
+            </div>
+        </div>
+
+        <!-- PROGRESSIVE DISCOVERY -->
+        <div class="ai-card p-6 mb-6">
+            <h2 class="text-xl text-amber-300 mb-4 border-b border-amber-600 pb-2">🤖 PROGRESSIVE DISCOVERY PATTERN</h2>
+
+            <div class="bg-black/50 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// NEVER load all tools at once</span>
+<span class="text-slate-500">// ALWAYS discover progressively</span>
+
+<span class="text-slate-500">// 1. Check .well-known (no connection needed)</span>
+<span class="text-purple-400">const</span> metadata = <span class="text-purple-400">await</span> <span class="text-cyan-400">fetch</span>(
+  <span class="text-green-400">'https://server.com/.well-known/mcp.json'</span>
+);
+
+<span class="text-slate-500">// 2. List available tool categories</span>
+<span class="text-purple-400">const</span> categories = <span class="text-purple-400">await</span> mcp.<span class="text-yellow-400">list</span>(<span class="text-green-400">'/'</span>);
+<span class="text-slate-500">// ['github/', 'slack/', 'postgres/']</span>
+
+<span class="text-slate-500">// 3. Load ONLY needed tool definition</span>
+<span class="text-purple-400">const</span> tool = <span class="text-purple-400">await</span> mcp.<span class="text-yellow-400">loadTool</span>(
+  <span class="text-green-400">'github/createPullRequest'</span>
+);
+
+<span class="text-slate-500">// 4. Execute with minimal context</span>
+<span class="text-purple-400">await</span> tool.<span class="text-yellow-400">execute</span>(params);
+                </pre>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-amber-300 border-b border-amber-600">
+                            <th class="text-left p-2">Action</th>
+                            <th class="text-left p-2">Token Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-2">.well-known discovery</td>
+                            <td class="p-2 text-green-400">0 tokens</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-2">List categories</td>
+                            <td class="p-2 text-green-400">~50 tokens</td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="p-2">Load single tool</td>
+                            <td class="p-2 text-yellow-400">~100 tokens</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 text-red-400">Load ALL tools (old way)</td>
+                            <td class="p-2 text-red-400">~5000+ tokens</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MCP + SKILLS INTEGRATION -->
+        <div class="ai-card p-6 mb-6">
+            <h2 class="text-xl text-amber-300 mb-4 border-b border-amber-600 pb-2">🤖 MCP + SKILLS INTEGRATION PATTERNS</h2>
+
+            <h3 class="text-lg text-white mb-3">Pattern 1: Data Analysis Pipeline</h3>
+            <div class="bg-black/50 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Skill: data-analysis</span>
+<span class="text-slate-500">// MCP: postgres, visualization</span>
+
+<span class="text-purple-400">async function</span> <span class="text-cyan-400">analyzeData</span>() {
+  <span class="text-slate-500">// MCP: Fetch data</span>
+  <span class="text-purple-400">const</span> data = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">postgres</span>.<span class="text-yellow-400">query</span>(sql);
+
+  <span class="text-slate-500">// Skill: Apply business logic</span>
+  <span class="text-purple-400">const</span> analysis = skill.<span class="text-cyan-400">dataAnalysis</span>.<span class="text-yellow-400">process</span>(data);
+
+  <span class="text-slate-500">// MCP: Generate visualization</span>
+  <span class="text-purple-400">const</span> chart = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">viz</span>.<span class="text-yellow-400">createChart</span>(analysis);
+
+  <span class="text-purple-400">return</span> { analysis, chart };
+}
+                </pre>
+            </div>
+
+            <h3 class="text-lg text-white mb-3">Pattern 2: CI/CD Automation</h3>
+            <div class="bg-black/50 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Skill: ci-analysis</span>
+<span class="text-slate-500">// MCP: github</span>
+
+<span class="text-purple-400">async function</span> <span class="text-cyan-400">monitorCI</span>() {
+  <span class="text-slate-500">// MCP: Get workflow runs</span>
+  <span class="text-purple-400">const</span> runs = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">github</span>.<span class="text-yellow-400">listWorkflowRuns</span>();
+
+  <span class="text-slate-500">// Skill: Analyze trends & issues</span>
+  <span class="text-purple-400">const</span> report = skill.<span class="text-cyan-400">ciAnalysis</span>.<span class="text-yellow-400">analyze</span>(runs);
+
+  <span class="text-slate-500">// MCP: Post to Slack if issues</span>
+  <span class="text-purple-400">if</span> (report.hasIssues) {
+    <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">slack</span>.<span class="text-yellow-400">postMessage</span>(report.summary);
+  }
+}
+                </pre>
+            </div>
+
+            <h3 class="text-lg text-white mb-3">Pattern 3: Document Processing</h3>
+            <div class="bg-black/50 p-4 rounded font-mono text-xs">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Skill: pdf, docx</span>
+<span class="text-slate-500">// MCP: storage, email</span>
+
+<span class="text-purple-400">async function</span> <span class="text-cyan-400">processDocuments</span>() {
+  <span class="text-slate-500">// MCP: Fetch documents</span>
+  <span class="text-purple-400">const</span> files = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">storage</span>.<span class="text-yellow-400">listFiles</span>(<span class="text-green-400">'/inbox'</span>);
+
+  <span class="text-purple-400">for</span> (<span class="text-purple-400">const</span> file <span class="text-purple-400">of</span> files) {
+    <span class="text-slate-500">// Skill: Extract & process</span>
+    <span class="text-purple-400">const</span> content = skill.<span class="text-cyan-400">pdf</span>.<span class="text-yellow-400">extract</span>(file);
+    <span class="text-purple-400">const</span> summary = skill.<span class="text-cyan-400">docx</span>.<span class="text-yellow-400">createReport</span>(content);
+
+    <span class="text-slate-500">// MCP: Save & notify</span>
+    <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">storage</span>.<span class="text-yellow-400">save</span>(summary);
+    <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">email</span>.<span class="text-yellow-400">send</span>(notification);
+  }
+}
+                </pre>
+            </div>
+        </div>
+
+        <!-- PRIVACY PATTERN -->
+        <div class="ai-card p-6 mb-6">
+            <h2 class="text-xl text-amber-300 mb-4 border-b border-amber-600 pb-2">🤖 PRIVACY-PRESERVING PATTERN</h2>
+
+            <div class="bg-black/50 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Sensitive data NEVER reaches model context</span>
+
+<span class="text-purple-400">async function</span> <span class="text-cyan-400">processSecureData</span>() {
+  <span class="text-slate-500">// 1. Tokenize sensitive fields in sandbox</span>
+  <span class="text-purple-400">const</span> tokenized = <span class="text-cyan-400">tokenize</span>(data, [<span class="text-green-400">'email'</span>, <span class="text-green-400">'phone'</span>]);
+  <span class="text-slate-500">// Model sees: { email: '[TOKEN_1]', phone: '[TOKEN_2]' }</span>
+
+  <span class="text-slate-500">// 2. Process with model (safe)</span>
+  <span class="text-purple-400">const</span> result = <span class="text-purple-400">await</span> model.<span class="text-yellow-400">process</span>(tokenized);
+
+  <span class="text-slate-500">// 3. Detokenize for output</span>
+  <span class="text-purple-400">const</span> final = <span class="text-cyan-400">detokenize</span>(result);
+  <span class="text-slate-500">// Real values restored for downstream tools</span>
+}
+                </pre>
+            </div>
+
+            <div class="p-3 bg-red-900/30 border border-red-600 rounded text-xs">
+                <span class="text-red-400 font-bold">NEVER:</span>
+                <span class="text-red-200"> Pass PII (emails, phones, SSNs, credit cards) directly to model context</span>
+            </div>
+        </div>
+
+        <!-- CHECKLIST -->
+        <div class="ai-card p-6">
+            <h2 class="text-xl text-amber-300 mb-4 border-b border-amber-600 pb-2">🤖 IMPLEMENTATION CHECKLIST</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-white font-bold mb-3">Before Each MCP Call</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Using code execution pattern</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Loading only needed tools</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Processing data in sandbox</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Returning summaries only</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Tokenizing sensitive data</div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold mb-3">For Long Operations</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Using async pattern</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Implementing polling</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Handling timeouts</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Error recovery in place</div>
+                        <div class="flex items-center gap-2"><span class="text-green-400">☐</span> Progress reporting</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-8 text-amber-500 text-sm">
+            🤖 AI-Optimized MCP + Skills Integration | November 2025 Release Patterns
+        </footer>
+    </div>
+</body>
+</html>

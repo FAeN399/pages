@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP + Skills Integration Guide (Post Nov 25, 2025)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Share Tech Mono', monospace; background: #0f172a; color: #e2e8f0; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 8px; }
+        .glow { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        code { background: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 0.85em; }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-emerald-400 mb-2">MCP + Skills Integration</h1>
+            <p class="text-slate-400">Post-November 25, 2025 Release Patterns</p>
+            <div class="mt-4 inline-block px-4 py-1 bg-emerald-900/50 border border-emerald-600 rounded text-emerald-400 text-sm">
+                98% TOKEN REDUCTION • ASYNC OPS • PROGRESSIVE DISCOVERY
+            </div>
+        </header>
+
+        <!-- Core Concept -->
+        <div class="card p-6 mb-6 glow">
+            <h2 class="text-2xl text-emerald-300 mb-4 border-b border-slate-600 pb-2">The Power Duo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border border-cyan-600/50 p-4 rounded">
+                    <h3 class="text-cyan-400 font-bold text-lg mb-2">MCP = Connectivity</h3>
+                    <p class="text-sm text-slate-300 mb-2">Connects Claude to external systems:</p>
+                    <ul class="text-xs text-slate-400 space-y-1">
+                        <li>• Databases & APIs</li>
+                        <li>• GitHub, Jira, Slack</li>
+                        <li>• File systems & cloud storage</li>
+                        <li>• Any external data source</li>
+                    </ul>
+                </div>
+                <div class="border border-purple-600/50 p-4 rounded">
+                    <h3 class="text-purple-400 font-bold text-lg mb-2">Skills = Procedures</h3>
+                    <p class="text-sm text-slate-300 mb-2">Teaches Claude what to do with data:</p>
+                    <ul class="text-xs text-slate-400 space-y-1">
+                        <li>• Business logic & workflows</li>
+                        <li>• Data analysis patterns</li>
+                        <li>• Report generation rules</li>
+                        <li>• Domain expertise</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4 p-3 bg-emerald-900/30 border border-emerald-600 rounded text-sm text-center">
+                <strong class="text-emerald-400">Combined:</strong>
+                <span class="text-slate-300">MCP fetches the data → Skills process it intelligently</span>
+            </div>
+        </div>
+
+        <!-- Code Execution Pattern -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-2xl text-emerald-300 mb-4 border-b border-slate-600 pb-2">Code Execution Pattern (98% Token Reduction)</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-red-900/20 p-4 rounded border border-red-600/50">
+                    <h3 class="text-red-400 font-bold mb-2">❌ Old Way (150,000 tokens)</h3>
+                    <ul class="text-xs text-slate-300 space-y-1">
+                        <li>• Load ALL tool definitions upfront</li>
+                        <li>• Pass ALL results through context</li>
+                        <li>• Model sees everything</li>
+                        <li>• Massive token burn</li>
+                    </ul>
+                </div>
+                <div class="bg-green-900/20 p-4 rounded border border-green-600/50">
+                    <h3 class="text-green-400 font-bold mb-2">✓ New Way (2,000 tokens)</h3>
+                    <ul class="text-xs text-slate-300 space-y-1">
+                        <li>• ONE execute_code tool</li>
+                        <li>• Tools as code APIs</li>
+                        <li>• Data stays in sandbox</li>
+                        <li>• Only results returned</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-lg text-white mb-3">How It Works</h3>
+            <div class="bg-slate-900 p-4 rounded font-mono text-xs">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Instead of 42 GitHub tools in context...</span>
+<span class="text-slate-500">// ONE execute_code tool that runs TypeScript:</span>
+
+<span class="text-purple-400">const</span> result = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">github</span>.<span class="text-yellow-400">listPullRequests</span>({
+  owner: <span class="text-green-400">'myorg'</span>,
+  repo: <span class="text-green-400">'myrepo'</span>,
+  state: <span class="text-green-400">'open'</span>
+});
+
+<span class="text-slate-500">// Filter & process in sandbox (not context!)</span>
+<span class="text-purple-400">const</span> urgent = result.<span class="text-cyan-400">filter</span>(pr =>
+  pr.labels.<span class="text-cyan-400">includes</span>(<span class="text-green-400">'urgent'</span>)
+);
+
+<span class="text-slate-500">// Return only summary to model</span>
+<span class="text-purple-400">return</span> { count: urgent.length, titles: urgent.<span class="text-cyan-400">map</span>(p => p.title) };
+                </pre>
+            </div>
+        </div>
+
+        <!-- Async Operations -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-2xl text-emerald-300 mb-4 border-b border-slate-600 pb-2">Async Operations (November 25 Feature)</h2>
+
+            <p class="text-slate-300 text-sm mb-4">
+                Long-running tasks no longer block. Fire and check back later.
+            </p>
+
+            <div class="bg-slate-900 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Start long-running analysis</span>
+<span class="text-purple-400">const</span> taskId = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">analytics</span>.<span class="text-yellow-400">startAnalysis</span>({
+  dataset: <span class="text-green-400">'sales_2024'</span>,
+  type: <span class="text-green-400">'comprehensive'</span>
+});
+
+<span class="text-slate-500">// Continue with other work...</span>
+<span class="text-purple-400">await</span> processOtherTasks();
+
+<span class="text-slate-500">// Check back for results</span>
+<span class="text-purple-400">const</span> status = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">analytics</span>.<span class="text-yellow-400">checkStatus</span>(taskId);
+<span class="text-purple-400">if</span> (status.complete) {
+  <span class="text-purple-400">const</span> results = <span class="text-purple-400">await</span> mcp.<span class="text-cyan-400">analytics</span>.<span class="text-yellow-400">getResults</span>(taskId);
+}
+                </pre>
+            </div>
+
+            <h3 class="text-lg text-white mb-3">Use Cases</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                <div class="bg-slate-800 p-2 rounded text-center">Data Analysis</div>
+                <div class="bg-slate-800 p-2 rounded text-center">Report Generation</div>
+                <div class="bg-slate-800 p-2 rounded text-center">Web Scraping</div>
+                <div class="bg-slate-800 p-2 rounded text-center">ML Training</div>
+            </div>
+        </div>
+
+        <!-- Progressive Discovery -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-2xl text-emerald-300 mb-4 border-b border-slate-600 pb-2">Progressive Tool Discovery</h2>
+
+            <p class="text-slate-300 text-sm mb-4">
+                Tools presented as filesystem. Load only what you need.
+            </p>
+
+            <div class="bg-slate-900 p-4 rounded font-mono text-xs mb-4">
+                <pre class="text-slate-300">
+<span class="text-slate-500">// Browse available servers (no connection needed!)</span>
+<span class="text-purple-400">const</span> servers = <span class="text-purple-400">await</span> mcp.<span class="text-yellow-400">discover</span>();
+<span class="text-slate-500">// Returns: ['github', 'postgres', 'slack', 'jira']</span>
+
+<span class="text-slate-500">// Read specific tool definition only when needed</span>
+<span class="text-purple-400">const</span> tool = <span class="text-purple-400">await</span> mcp.<span class="text-yellow-400">loadTool</span>(<span class="text-green-400">'github/createPullRequest'</span>);
+
+<span class="text-slate-500">// Or explore like a filesystem</span>
+<span class="text-purple-400">const</span> githubTools = <span class="text-purple-400">await</span> mcp.<span class="text-yellow-400">list</span>(<span class="text-green-400">'github/'</span>);
+<span class="text-slate-500">// Returns: ['issues/', 'pulls/', 'repos/', 'actions/']</span>
+                </pre>
+            </div>
+
+            <h3 class="text-lg text-white mb-3">.well-known Discovery</h3>
+            <div class="bg-slate-900 p-3 rounded text-sm">
+                <p class="text-slate-300">Servers advertise capabilities at:</p>
+                <code class="text-green-400">https://server.com/.well-known/mcp.json</code>
+                <p class="text-slate-400 text-xs mt-2">Browse before connecting. No token cost for discovery.</p>
+            </div>
+        </div>
+
+        <!-- Combined Workflows -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-2xl text-emerald-300 mb-4 border-b border-slate-600 pb-2">Combined MCP + Skills Workflows</h2>
+
+            <div class="space-y-6">
+                <!-- Workflow 1 -->
+                <div class="border border-slate-600 p-4 rounded">
+                    <h3 class="text-cyan-400 font-bold mb-2">1. Data Analysis Pipeline</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                        <div class="bg-cyan-900/30 p-2 rounded">
+                            <div class="text-cyan-300 font-bold">MCP</div>
+                            <div class="text-slate-300">Connect to database</div>
+                        </div>
+                        <div class="bg-purple-900/30 p-2 rounded">
+                            <div class="text-purple-300 font-bold">Skill</div>
+                            <div class="text-slate-300">Apply analysis rules</div>
+                        </div>
+                        <div class="bg-emerald-900/30 p-2 rounded">
+                            <div class="text-emerald-300 font-bold">Result</div>
+                            <div class="text-slate-300">Formatted report</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow 2 -->
+                <div class="border border-slate-600 p-4 rounded">
+                    <h3 class="text-yellow-400 font-bold mb-2">2. CI/CD Monitoring</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                        <div class="bg-cyan-900/30 p-2 rounded">
+                            <div class="text-cyan-300 font-bold">MCP</div>
+                            <div class="text-slate-300">Connect to GitHub</div>
+                        </div>
+                        <div class="bg-purple-900/30 p-2 rounded">
+                            <div class="text-purple-300 font-bold">Skill</div>
+                            <div class="text-slate-300">Analyze build trends</div>
+                        </div>
+                        <div class="bg-emerald-900/30 p-2 rounded">
+                            <div class="text-emerald-300 font-bold">Result</div>
+                            <div class="text-slate-300">Health dashboard</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow 3 -->
+                <div class="border border-slate-600 p-4 rounded">
+                    <h3 class="text-pink-400 font-bold mb-2">3. Document Processing</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                        <div class="bg-cyan-900/30 p-2 rounded">
+                            <div class="text-cyan-300 font-bold">MCP</div>
+                            <div class="text-slate-300">Fetch from storage</div>
+                        </div>
+                        <div class="bg-purple-900/30 p-2 rounded">
+                            <div class="text-purple-300 font-bold">Skill</div>
+                            <div class="text-slate-300">Extract & format</div>
+                        </div>
+                        <div class="bg-emerald-900/30 p-2 rounded">
+                            <div class="text-emerald-300 font-bold">Result</div>
+                            <div class="text-slate-300">Structured output</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture -->
+        <div class="card p-6">
+            <h2 class="text-2xl text-emerald-300 mb-4 border-b border-slate-600 pb-2">Architecture Overview</h2>
+            <div class="font-mono text-xs overflow-x-auto">
+                <pre class="text-slate-300">
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Claude    │────▶│    Skill     │────▶│   Output    │
+│   (Agent)   │     │  (Business   │     │  (Report/   │
+│             │     │   Logic)     │     │   Action)   │
+└──────┬──────┘     └──────┬───────┘     └─────────────┘
+       │                   │
+       │                   ▼
+       │           ┌───────────────┐
+       │           │ Code Sandbox  │
+       │           │ (TypeScript)  │
+       │           └───────┬───────┘
+       │                   │
+       ▼                   ▼
+┌──────────────────────────────────────────────────────┐
+│                    MCP Layer                         │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐ │
+│  │ GitHub  │  │Postgres │  │  Slack  │  │  Jira   │ │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘ │
+└──────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+        </div>
+
+        <footer class="text-center mt-8 text-slate-500 text-sm">
+            MCP + Skills Integration Guide | November 2025 Release
+        </footer>
+    </div>
+</body>
+</html>
