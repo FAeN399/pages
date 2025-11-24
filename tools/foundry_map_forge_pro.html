@@ -1,0 +1,2268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foundry VTT Map Forge Pro</title>
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --panel-bg: rgba(30, 30, 30, 0.95);
+            --text-main: #e0e0e0;
+            --text-muted: #888;
+            --accent: #4ecdc4;
+            --accent-hover: #36b9b0;
+            --border: #444;
+            --input-bg: #2d2d2d;
+            --danger: #ff6b6b;
+        }
+
+        * { box-sizing: border-box; user-select: none; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* --- Canvas Viewport --- */
+        #viewport {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #0d0d0d;
+            cursor: grab;
+        }
+
+        #viewport:active { cursor: grabbing; }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 340px;
+            min-width: 340px;
+            background-color: var(--panel-bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.3);
+        }
+
+        .sidebar-header h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .sidebar-header .subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* --- Controls --- */
+        .control-section {
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: rgba(0,0,0,0.3);
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header:hover { background: rgba(0,0,0,0.4); }
+
+        .section-header .toggle-icon {
+            transition: transform 0.2s;
+        }
+
+        .section-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .section-content.collapsed {
+            display: none;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-row > * { flex: 1; }
+
+        label {
+            font-size: 0.8rem;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label.inline {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        label .label-text {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        label .value {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="number"], select {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+            height: 6px;
+        }
+
+        input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+        }
+
+        input[type="color"] {
+            width: 40px;
+            height: 30px;
+            padding: 2px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--input-bg);
+            cursor: pointer;
+        }
+
+        /* --- Buttons --- */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            background-color: var(--accent);
+            color: #121212;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: filter 0.2s, transform 0.1s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover { filter: brightness(1.1); }
+        button:active { transform: scale(0.98); }
+        button.secondary { background-color: #444; color: var(--text-main); }
+        button.small { padding: 8px; font-size: 0.75rem; }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .button-row button { flex: 1; }
+
+        /* --- Status Bar --- */
+        .status-bar {
+            padding: 10px 15px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            background: rgba(0,0,0,0.3);
+        }
+
+        /* --- Palette Swatches --- */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .palette-swatch {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.1s;
+        }
+
+        .palette-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .palette-swatch.active {
+            border-color: var(--accent);
+        }
+
+        /* --- FPS Counter --- */
+        .fps-counter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-family: monospace;
+            z-index: 50;
+        }
+
+        /* --- Help Tooltip --- */
+        .help-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--border);
+            font-size: 0.6rem;
+            cursor: help;
+            margin-left: 5px;
+        }
+
+        /* Hidden file input */
+        #fileInput { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="viewport">
+        <canvas id="staticCanvas"></canvas>
+        <canvas id="lightCanvas"></canvas>
+        <canvas id="mainCanvas"></canvas>
+        <div class="fps-counter" id="fpsCounter">60 FPS</div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Map Forge Pro</h1>
+            <div class="subtitle">Procedural VTT Generator v2.0</div>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Generation Settings -->
+            <div class="control-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    Generation <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <label>
+                        Map Type
+                        <select id="biomeSelect">
+                            <option value="dungeon">Ancient Dungeon (BSP)</option>
+                            <option value="cavern">Fungal Caverns (Cellular)</option>
+                            <option value="town">Frontier Town (Buildings)</option>
+                            <option value="fortress">Dark Fortress (Rooms)</option>
+                        </select>
+                    </label>
+                    <div class="control-row">
+                        <label>
+                            Width
+                            <input type="number" id="mapWidth" value="64" min="16" max="256">
+                        </label>
+                        <label>
+                            Height
+                            <input type="number" id="mapHeight" value="64" min="16" max="256">
+                        </label>
+                    </div>
+                    <label>
+                        Seed
+                        <input type="text" id="seedInput" placeholder="Leave blank for random">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Room & Corridor Settings -->
+            <div class="control-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    Rooms & Corridors <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <label>
+                        <div class="label-text">Min Corridor Width <span class="value" id="corridorWidthVal">3</span></div>
+                        <input type="range" id="corridorWidth" min="2" max="5" value="3">
+                    </label>
+                    <label>
+                        <div class="label-text">Room Size Multiplier <span class="value" id="roomSizeVal">1.5x</span></div>
+                        <input type="range" id="roomSizeMultiplier" min="10" max="30" value="15">
+                    </label>
+                    <label>
+                        <div class="label-text">Room Density <span class="value" id="roomDensityVal">60%</span></div>
+                        <input type="range" id="roomDensity" min="20" max="100" value="60">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Town Settings (conditionally shown) -->
+            <div class="control-section" id="townSettings" style="display: none;">
+                <div class="section-header" onclick="toggleSection(this)">
+                    Town Options <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <label class="inline">
+                        Show Interiors (vs Roofs)
+                        <input type="checkbox" id="showInteriors" checked>
+                    </label>
+                    <label>
+                        <div class="label-text">Building Density <span class="value" id="buildingDensityVal">70%</span></div>
+                        <input type="range" id="buildingDensity" min="20" max="100" value="70">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Lighting Settings -->
+            <div class="control-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    Lighting Engine <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <label class="inline">
+                        Enable Lighting
+                        <input type="checkbox" id="enableLighting" checked>
+                    </label>
+                    <label>
+                        <div class="label-text">Ambient Light <span class="value" id="ambientVal">30%</span></div>
+                        <input type="range" id="ambientLight" min="0" max="100" value="30">
+                    </label>
+                    <label>
+                        <div class="label-text">Torch Intensity <span class="value" id="torchIntensityVal">80%</span></div>
+                        <input type="range" id="torchIntensity" min="20" max="100" value="80">
+                    </label>
+                    <label class="inline">
+                        Torch Flicker
+                        <input type="checkbox" id="torchFlicker" checked>
+                    </label>
+                    <label class="inline">
+                        Ambient Occlusion
+                        <input type="checkbox" id="ambientOcclusion" checked>
+                    </label>
+                    <label class="inline">
+                        Vignette
+                        <input type="checkbox" id="vignette" checked>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Visual Theme -->
+            <div class="control-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    Visual Theme <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content collapsed">
+                    <label>Color Palette</label>
+                    <div class="palette-grid" id="paletteGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                    <label>
+                        <div class="label-text">Wall Thickness <span class="value" id="wallThicknessVal">Normal</span></div>
+                        <input type="range" id="wallThickness" min="1" max="3" value="2">
+                    </label>
+                    <label>
+                        <div class="label-text">Water Level <span class="value" id="waterLevelVal">0%</span></div>
+                        <input type="range" id="waterLevel" min="0" max="50" value="0">
+                    </label>
+                    <label>
+                        <div class="label-text">Detail Density <span class="value" id="detailDensityVal">50%</span></div>
+                        <input type="range" id="detailDensity" min="0" max="100" value="50">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Grid & Display -->
+            <div class="control-section">
+                <div class="section-header collapsed" onclick="toggleSection(this)">
+                    Grid & Display <span class="toggle-icon">▼</span>
+                </div>
+                <div class="section-content collapsed">
+                    <label>
+                        Grid Size (px/tile)
+                        <input type="number" id="gridSizePx" value="100" min="32" max="140">
+                    </label>
+                    <label class="inline">
+                        Show Grid
+                        <input type="checkbox" id="showGrid" checked>
+                    </label>
+                    <label class="inline">
+                        Show FPS
+                        <input type="checkbox" id="showFps" checked>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="button-group">
+                <button id="generateBtn">Generate Map</button>
+                <div class="button-row">
+                    <button class="secondary small" id="exportImgBtn">Export WebP</button>
+                    <button class="secondary small" id="exportJsonBtn">Save JSON</button>
+                </div>
+                <button class="secondary small" id="importJsonBtn">Import JSON</button>
+            </div>
+        </div>
+
+        <div class="status-bar" id="statusBar">Ready. Use scroll to zoom, drag to pan.</div>
+    </div>
+
+    <input type="file" id="fileInput" accept=".json">
+
+    <script>
+        /**
+         * Foundry VTT Map Forge Pro v2.0
+         * Heavy Refactor: Layered Rendering, Advanced Town Generation, 2D Lighting
+         */
+
+        // ============================================================================
+        // STATE MANAGEMENT
+        // ============================================================================
+
+        const state = {
+            config: {
+                width: 64,
+                height: 64,
+                gridSize: 100,
+                seed: '',
+                biome: 'dungeon',
+                corridorWidth: 3,
+                roomSizeMultiplier: 1.5,
+                roomDensity: 0.6,
+                buildingDensity: 0.7,
+                showInteriors: true,
+                enableLighting: true,
+                ambientLight: 0.3,
+                torchIntensity: 0.8,
+                torchFlicker: true,
+                ambientOcclusion: true,
+                vignette: true,
+                wallThickness: 2,
+                waterLevel: 0,
+                detailDensity: 0.5,
+                showGrid: true,
+                showFps: true,
+                palette: 'obsidian'
+            },
+            mapData: [],
+            entities: [],
+            lights: [],
+            buildings: [],
+            view: {
+                scale: 0.5,
+                offsetX: 0,
+                offsetY: 0,
+                isDragging: false,
+                lastX: 0,
+                lastY: 0
+            },
+            rendering: {
+                staticDirty: true,
+                lightDirty: true,
+                animationFrame: null,
+                lastFrameTime: 0,
+                fps: 60,
+                flickerPhase: 0
+            }
+        };
+
+        // ============================================================================
+        // COLOR PALETTES
+        // ============================================================================
+
+        const PALETTES = {
+            obsidian: {
+                name: 'Obsidian Dungeon',
+                floor: '#2a2a2a',
+                floorAlt: '#333333',
+                wall: '#1a1815',
+                wallHighlight: '#2d2a27',
+                water: '#1a3a4a',
+                grass: '#1d3a1d',
+                road: '#3a3a3a',
+                accent: '#4a3a2a'
+            },
+            sandstone: {
+                name: 'Sandstone Ruins',
+                floor: '#c4a882',
+                floorAlt: '#d4b892',
+                wall: '#8b7355',
+                wallHighlight: '#a08565',
+                water: '#5a8fa0',
+                grass: '#6b8b4a',
+                road: '#9a8a6a',
+                accent: '#7a6a5a'
+            },
+            ice: {
+                name: 'Frozen Caverns',
+                floor: '#a0c0d0',
+                floorAlt: '#b0d0e0',
+                wall: '#4a6a7a',
+                wallHighlight: '#5a7a8a',
+                water: '#2a4a6a',
+                grass: '#4a6a5a',
+                road: '#7a9aaa',
+                accent: '#3a5a6a'
+            },
+            infernal: {
+                name: 'Infernal Depths',
+                floor: '#3a2020',
+                floorAlt: '#4a2a2a',
+                wall: '#1a0a0a',
+                wallHighlight: '#2a1515',
+                water: '#6a1a1a',
+                grass: '#2a3a1a',
+                road: '#4a3030',
+                accent: '#5a2a1a'
+            },
+            forest: {
+                name: 'Forest Shrine',
+                floor: '#3a4a2a',
+                floorAlt: '#4a5a3a',
+                wall: '#2a3a1a',
+                wallHighlight: '#3a4a2a',
+                water: '#2a4a5a',
+                grass: '#2d5a27',
+                road: '#5a5a4a',
+                accent: '#4a5a3a'
+            },
+            void: {
+                name: 'Void Temple',
+                floor: '#1a1a2a',
+                floorAlt: '#2a2a3a',
+                wall: '#0a0a1a',
+                wallHighlight: '#1a1a2a',
+                water: '#2a2a5a',
+                grass: '#1a2a2a',
+                road: '#2a2a3a',
+                accent: '#3a2a4a'
+            },
+            marble: {
+                name: 'Marble Palace',
+                floor: '#d0d0d0',
+                floorAlt: '#e0e0e0',
+                wall: '#8a8a8a',
+                wallHighlight: '#a0a0a0',
+                water: '#7ab0c0',
+                grass: '#7a9a6a',
+                road: '#b0b0b0',
+                accent: '#9a9a9a'
+            },
+            copper: {
+                name: 'Copper Mines',
+                floor: '#5a4a3a',
+                floorAlt: '#6a5a4a',
+                wall: '#3a2a1a',
+                wallHighlight: '#4a3a2a',
+                water: '#3a5a6a',
+                grass: '#4a5a3a',
+                road: '#6a5a4a',
+                accent: '#7a5a3a'
+            }
+        };
+
+        // ============================================================================
+        // TILE TYPES
+        // ============================================================================
+
+        const TILE = {
+            VOID: -1,
+            FLOOR: 0,
+            WALL: 1,
+            WATER: 2,
+            ROAD: 3,
+            GRASS: 4,
+            DOOR: 5
+        };
+
+        // ============================================================================
+        // BUILDING TYPES & FURNITURE
+        // ============================================================================
+
+        const BUILDING_TYPES = [
+            { type: 'house', weight: 40, furniture: ['bed', 'table', 'chair', 'chest'] },
+            { type: 'tavern', weight: 15, furniture: ['table', 'table', 'chair', 'chair', 'barrel', 'bar'] },
+            { type: 'smithy', weight: 10, furniture: ['anvil', 'forge', 'barrel', 'rack'] },
+            { type: 'shop', weight: 15, furniture: ['counter', 'shelf', 'shelf', 'crate'] },
+            { type: 'temple', weight: 10, furniture: ['altar', 'brazier', 'brazier', 'statue'] },
+            { type: 'warehouse', weight: 10, furniture: ['crate', 'crate', 'barrel', 'barrel'] }
+        ];
+
+        // ============================================================================
+        // SEEDED RANDOM NUMBER GENERATOR
+        // ============================================================================
+
+        let rand = () => Math.random();
+
+        function setSeed(str) {
+            let h = 1779033703 ^ str.length;
+            for (let i = 0; i < str.length; i++) {
+                h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+                h = h << 13 | h >>> 19;
+            }
+            let seed = function() {
+                h = Math.imul(h ^ (h >>> 16), 2246822507);
+                h = Math.imul(h ^ (h >>> 13), 3266489909);
+                return (h ^= h >>> 16) >>> 0;
+            };
+            let s = seed();
+            rand = function() {
+                s += 0x6D2B79F5;
+                let t = Math.imul(s ^ s >>> 15, 1 | s);
+                t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function randInt(min, max) {
+            return Math.floor(rand() * (max - min + 1)) + min;
+        }
+
+        function randChoice(arr) {
+            return arr[Math.floor(rand() * arr.length)];
+        }
+
+        function weightedChoice(items) {
+            const total = items.reduce((sum, item) => sum + item.weight, 0);
+            let r = rand() * total;
+            for (const item of items) {
+                r -= item.weight;
+                if (r <= 0) return item;
+            }
+            return items[items.length - 1];
+        }
+
+        // ============================================================================
+        // DOM ELEMENTS
+        // ============================================================================
+
+        const viewport = document.getElementById('viewport');
+        const staticCanvas = document.getElementById('staticCanvas');
+        const lightCanvas = document.getElementById('lightCanvas');
+        const mainCanvas = document.getElementById('mainCanvas');
+        const staticCtx = staticCanvas.getContext('2d', { alpha: false });
+        const lightCtx = lightCanvas.getContext('2d', { alpha: true });
+        const mainCtx = mainCanvas.getContext('2d', { alpha: false });
+        const statusBar = document.getElementById('statusBar');
+        const fpsCounter = document.getElementById('fpsCounter');
+
+        // ============================================================================
+        // MAP GENERATION
+        // ============================================================================
+
+        function generate() {
+            statusBar.innerText = "Generating...";
+
+            // Setup seed
+            const seedVal = document.getElementById('seedInput').value ||
+                           Math.random().toString(36).substring(2, 10);
+            state.config.seed = seedVal;
+            document.getElementById('seedInput').value = seedVal;
+            setSeed(seedVal);
+
+            // Update config from UI
+            updateConfigFromUI();
+
+            // Resize canvases
+            const canvasWidth = state.config.width * state.config.gridSize;
+            const canvasHeight = state.config.height * state.config.gridSize;
+
+            [staticCanvas, lightCanvas, mainCanvas].forEach(c => {
+                c.width = canvasWidth;
+                c.height = canvasHeight;
+            });
+
+            // Reset state
+            state.mapData = createEmptyMap(state.config.width, state.config.height, TILE.WALL);
+            state.entities = [];
+            state.lights = [];
+            state.buildings = [];
+
+            // Run generation algorithm
+            switch (state.config.biome) {
+                case 'dungeon': generateBSP(); break;
+                case 'cavern': generateCellular(); break;
+                case 'town': generateTown(); break;
+                case 'fortress': generateFortress(); break;
+            }
+
+            // Apply water level
+            if (state.config.waterLevel > 0) {
+                applyWaterLevel();
+            }
+
+            // Generate details and lights
+            generateDetails();
+            generateLightSources();
+
+            // Mark canvases as dirty
+            state.rendering.staticDirty = true;
+            state.rendering.lightDirty = true;
+
+            // Start render loop if not running
+            if (!state.rendering.animationFrame) {
+                renderLoop();
+            }
+
+            statusBar.innerText = `Generated: ${state.config.width}x${state.config.height} | Seed: ${seedVal}`;
+        }
+
+        function createEmptyMap(w, h, fill) {
+            return Array(h).fill().map(() => Array(w).fill(fill));
+        }
+
+        function updateConfigFromUI() {
+            state.config.width = parseInt(document.getElementById('mapWidth').value);
+            state.config.height = parseInt(document.getElementById('mapHeight').value);
+            state.config.gridSize = parseInt(document.getElementById('gridSizePx').value);
+            state.config.biome = document.getElementById('biomeSelect').value;
+            state.config.corridorWidth = parseInt(document.getElementById('corridorWidth').value);
+            state.config.roomSizeMultiplier = parseInt(document.getElementById('roomSizeMultiplier').value) / 10;
+            state.config.roomDensity = parseInt(document.getElementById('roomDensity').value) / 100;
+            state.config.buildingDensity = parseInt(document.getElementById('buildingDensity').value) / 100;
+            state.config.showInteriors = document.getElementById('showInteriors').checked;
+            state.config.enableLighting = document.getElementById('enableLighting').checked;
+            state.config.ambientLight = parseInt(document.getElementById('ambientLight').value) / 100;
+            state.config.torchIntensity = parseInt(document.getElementById('torchIntensity').value) / 100;
+            state.config.torchFlicker = document.getElementById('torchFlicker').checked;
+            state.config.ambientOcclusion = document.getElementById('ambientOcclusion').checked;
+            state.config.vignette = document.getElementById('vignette').checked;
+            state.config.wallThickness = parseInt(document.getElementById('wallThickness').value);
+            state.config.waterLevel = parseInt(document.getElementById('waterLevel').value) / 100;
+            state.config.detailDensity = parseInt(document.getElementById('detailDensity').value) / 100;
+            state.config.showGrid = document.getElementById('showGrid').checked;
+            state.config.showFps = document.getElementById('showFps').checked;
+        }
+
+        // ============================================================================
+        // BSP DUNGEON GENERATION
+        // ============================================================================
+
+        function generateBSP() {
+            const w = state.config.width;
+            const h = state.config.height;
+            const rooms = [];
+            const minSize = Math.floor(6 * state.config.roomSizeMultiplier);
+            const maxSize = Math.floor(12 * state.config.roomSizeMultiplier);
+            const corridorW = state.config.corridorWidth;
+
+            // Recursive BSP
+            function splitContainer(x, y, cw, ch, depth) {
+                const maxDepth = Math.floor(4 + state.config.roomDensity * 3);
+
+                if (depth >= maxDepth || (cw < minSize * 2 && ch < minSize * 2)) {
+                    // Create room with padding
+                    const padding = 2;
+                    const roomW = randInt(minSize, Math.min(maxSize, cw - padding * 2));
+                    const roomH = randInt(minSize, Math.min(maxSize, ch - padding * 2));
+                    const roomX = x + randInt(padding, Math.max(padding, cw - roomW - padding));
+                    const roomY = y + randInt(padding, Math.max(padding, ch - roomH - padding));
+
+                    if (roomW > 3 && roomH > 3) {
+                        rooms.push({ x: roomX, y: roomY, w: roomW, h: roomH });
+                    }
+                    return;
+                }
+
+                // Decide split direction
+                const horizontal = cw > ch ? false : (ch > cw ? true : rand() > 0.5);
+
+                if (horizontal && ch > minSize * 2) {
+                    const split = randInt(minSize, ch - minSize);
+                    splitContainer(x, y, cw, split, depth + 1);
+                    splitContainer(x, y + split, cw, ch - split, depth + 1);
+                } else if (!horizontal && cw > minSize * 2) {
+                    const split = randInt(minSize, cw - minSize);
+                    splitContainer(x, y, split, ch, depth + 1);
+                    splitContainer(x + split, y, cw - split, ch, depth + 1);
+                } else {
+                    // Can't split, make room
+                    const padding = 2;
+                    const roomW = randInt(minSize, Math.min(maxSize, cw - padding * 2));
+                    const roomH = randInt(minSize, Math.min(maxSize, ch - padding * 2));
+                    const roomX = x + Math.floor((cw - roomW) / 2);
+                    const roomY = y + Math.floor((ch - roomH) / 2);
+
+                    if (roomW > 3 && roomH > 3) {
+                        rooms.push({ x: roomX, y: roomY, w: roomW, h: roomH });
+                    }
+                }
+            }
+
+            splitContainer(1, 1, w - 2, h - 2, 0);
+
+            // Carve rooms
+            rooms.forEach(r => {
+                for (let y = r.y; y < r.y + r.h; y++) {
+                    for (let x = r.x; x < r.x + r.w; x++) {
+                        if (y >= 0 && y < h && x >= 0 && x < w) {
+                            state.mapData[y][x] = TILE.FLOOR;
+                        }
+                    }
+                }
+            });
+
+            // Connect rooms with wide corridors
+            for (let i = 0; i < rooms.length - 1; i++) {
+                const r1 = rooms[i];
+                const r2 = rooms[i + 1];
+                const c1 = { x: Math.floor(r1.x + r1.w / 2), y: Math.floor(r1.y + r1.h / 2) };
+                const c2 = { x: Math.floor(r2.x + r2.w / 2), y: Math.floor(r2.y + r2.h / 2) };
+
+                if (rand() > 0.5) {
+                    carveHCorridor(c1.x, c2.x, c1.y, corridorW);
+                    carveVCorridor(c1.y, c2.y, c2.x, corridorW);
+                } else {
+                    carveVCorridor(c1.y, c2.y, c1.x, corridorW);
+                    carveHCorridor(c1.x, c2.x, c2.y, corridorW);
+                }
+            }
+
+            // Add extra connections for loop potential
+            const extraConnections = Math.floor(rooms.length * 0.3);
+            for (let i = 0; i < extraConnections; i++) {
+                const r1 = randChoice(rooms);
+                const r2 = randChoice(rooms);
+                if (r1 !== r2) {
+                    const c1 = { x: Math.floor(r1.x + r1.w / 2), y: Math.floor(r1.y + r1.h / 2) };
+                    const c2 = { x: Math.floor(r2.x + r2.w / 2), y: Math.floor(r2.y + r2.h / 2) };
+                    carveHCorridor(c1.x, c2.x, c1.y, corridorW);
+                    carveVCorridor(c1.y, c2.y, c2.x, corridorW);
+                }
+            }
+        }
+
+        function carveHCorridor(x1, x2, y, width) {
+            const w = state.config.width;
+            const h = state.config.height;
+            const halfW = Math.floor(width / 2);
+
+            for (let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+                for (let dy = -halfW; dy <= halfW; dy++) {
+                    const ny = y + dy;
+                    if (x >= 0 && x < w && ny >= 0 && ny < h) {
+                        state.mapData[ny][x] = TILE.FLOOR;
+                    }
+                }
+            }
+        }
+
+        function carveVCorridor(y1, y2, x, width) {
+            const w = state.config.width;
+            const h = state.config.height;
+            const halfW = Math.floor(width / 2);
+
+            for (let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+                for (let dx = -halfW; dx <= halfW; dx++) {
+                    const nx = x + dx;
+                    if (nx >= 0 && nx < w && y >= 0 && y < h) {
+                        state.mapData[y][nx] = TILE.FLOOR;
+                    }
+                }
+            }
+        }
+
+        // ============================================================================
+        // CELLULAR AUTOMATA CAVERNS
+        // ============================================================================
+
+        function generateCellular() {
+            const w = state.config.width;
+            const h = state.config.height;
+            const openness = 0.42 + state.config.roomDensity * 0.1;
+
+            // Initialize with noise
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    if (x === 0 || x === w - 1 || y === 0 || y === h - 1) {
+                        state.mapData[y][x] = TILE.WALL;
+                    } else {
+                        state.mapData[y][x] = rand() < openness ? TILE.FLOOR : TILE.WALL;
+                    }
+                }
+            }
+
+            // Smoothing passes
+            for (let i = 0; i < 5; i++) {
+                const newMap = state.mapData.map(row => [...row]);
+
+                for (let y = 1; y < h - 1; y++) {
+                    for (let x = 1; x < w - 1; x++) {
+                        let walls = 0;
+                        for (let dy = -1; dy <= 1; dy++) {
+                            for (let dx = -1; dx <= 1; dx++) {
+                                if (state.mapData[y + dy][x + dx] === TILE.WALL) walls++;
+                            }
+                        }
+                        newMap[y][x] = walls > 4 ? TILE.WALL : TILE.FLOOR;
+                    }
+                }
+
+                state.mapData = newMap;
+            }
+
+            // Ensure connectivity with corridor carving
+            const corridorW = state.config.corridorWidth;
+            const numCorridors = Math.floor(3 + state.config.roomDensity * 5);
+
+            for (let i = 0; i < numCorridors; i++) {
+                const x1 = randInt(5, w - 5);
+                const y1 = randInt(5, h - 5);
+                const x2 = randInt(5, w - 5);
+                const y2 = randInt(5, h - 5);
+
+                carveHCorridor(x1, x2, y1, corridorW);
+                carveVCorridor(y1, y2, x2, corridorW);
+            }
+        }
+
+        // ============================================================================
+        // ADVANCED TOWN GENERATION
+        // ============================================================================
+
+        function generateTown() {
+            const w = state.config.width;
+            const h = state.config.height;
+
+            // Fill with grass
+            state.mapData = createEmptyMap(w, h, TILE.GRASS);
+
+            // Generate road network
+            generateRoadNetwork(w, h);
+
+            // Place buildings along roads
+            placeBuildings(w, h);
+
+            // Add town square
+            const squareX = Math.floor(w / 2) - 3;
+            const squareY = Math.floor(h / 2) - 3;
+            for (let y = squareY; y < squareY + 6; y++) {
+                for (let x = squareX; x < squareX + 6; x++) {
+                    if (y >= 0 && y < h && x >= 0 && x < w) {
+                        state.mapData[y][x] = TILE.ROAD;
+                    }
+                }
+            }
+        }
+
+        function generateRoadNetwork(w, h) {
+            // Main roads (cross pattern)
+            const mainRoadWidth = state.config.corridorWidth;
+            const centerX = Math.floor(w / 2);
+            const centerY = Math.floor(h / 2);
+
+            // Horizontal main road
+            for (let x = 2; x < w - 2; x++) {
+                for (let dy = -Math.floor(mainRoadWidth / 2); dy <= Math.floor(mainRoadWidth / 2); dy++) {
+                    const y = centerY + dy;
+                    if (y >= 0 && y < h) {
+                        state.mapData[y][x] = TILE.ROAD;
+                    }
+                }
+            }
+
+            // Vertical main road
+            for (let y = 2; y < h - 2; y++) {
+                for (let dx = -Math.floor(mainRoadWidth / 2); dx <= Math.floor(mainRoadWidth / 2); dx++) {
+                    const x = centerX + dx;
+                    if (x >= 0 && x < w) {
+                        state.mapData[y][x] = TILE.ROAD;
+                    }
+                }
+            }
+
+            // Side streets
+            const numStreets = Math.floor(4 + state.config.roomDensity * 6);
+            for (let i = 0; i < numStreets; i++) {
+                const horizontal = rand() > 0.5;
+                const streetWidth = 2;
+
+                if (horizontal) {
+                    const y = randInt(5, h - 5);
+                    const x1 = randInt(2, w / 2);
+                    const x2 = randInt(w / 2, w - 2);
+
+                    for (let x = x1; x < x2; x++) {
+                        for (let dy = 0; dy < streetWidth; dy++) {
+                            if (y + dy < h) {
+                                state.mapData[y + dy][x] = TILE.ROAD;
+                            }
+                        }
+                    }
+                } else {
+                    const x = randInt(5, w - 5);
+                    const y1 = randInt(2, h / 2);
+                    const y2 = randInt(h / 2, h - 2);
+
+                    for (let y = y1; y < y2; y++) {
+                        for (let dx = 0; dx < streetWidth; dx++) {
+                            if (x + dx < w) {
+                                state.mapData[y][x + dx] = TILE.ROAD;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function placeBuildings(w, h) {
+            const minBuildingSize = Math.floor(4 * state.config.roomSizeMultiplier);
+            const maxBuildingSize = Math.floor(8 * state.config.roomSizeMultiplier);
+            const attempts = Math.floor(w * h * state.config.buildingDensity * 0.1);
+
+            for (let i = 0; i < attempts; i++) {
+                const bw = randInt(minBuildingSize, maxBuildingSize);
+                const bh = randInt(minBuildingSize, maxBuildingSize);
+                const bx = randInt(2, w - bw - 2);
+                const by = randInt(2, h - bh - 2);
+
+                // Check if area is clear (all grass)
+                let canPlace = true;
+                for (let y = by - 1; y <= by + bh && canPlace; y++) {
+                    for (let x = bx - 1; x <= bx + bw && canPlace; x++) {
+                        if (y < 0 || y >= h || x < 0 || x >= w) {
+                            canPlace = false;
+                        } else if (state.mapData[y][x] !== TILE.GRASS) {
+                            canPlace = false;
+                        }
+                    }
+                }
+
+                // Check adjacency to road
+                let nearRoad = false;
+                for (let y = by - 2; y <= by + bh + 1 && !nearRoad; y++) {
+                    for (let x = bx - 2; x <= bx + bw + 1 && !nearRoad; x++) {
+                        if (y >= 0 && y < h && x >= 0 && x < w) {
+                            if (state.mapData[y][x] === TILE.ROAD) {
+                                nearRoad = true;
+                            }
+                        }
+                    }
+                }
+
+                if (canPlace && nearRoad) {
+                    createBuilding(bx, by, bw, bh);
+                }
+            }
+        }
+
+        function createBuilding(x, y, w, h) {
+            const buildingType = weightedChoice(BUILDING_TYPES);
+            const mapW = state.config.width;
+            const mapH = state.config.height;
+
+            // Create walls
+            for (let by = y; by < y + h; by++) {
+                for (let bx = x; bx < x + w; bx++) {
+                    if (by >= 0 && by < mapH && bx >= 0 && bx < mapW) {
+                        // Walls on perimeter
+                        if (by === y || by === y + h - 1 || bx === x || bx === x + w - 1) {
+                            state.mapData[by][bx] = TILE.WALL;
+                        } else {
+                            state.mapData[by][bx] = TILE.FLOOR;
+                        }
+                    }
+                }
+            }
+
+            // Add door (gap in wall)
+            const doorSide = randInt(0, 3);
+            let doorX, doorY;
+
+            switch (doorSide) {
+                case 0: // Top
+                    doorX = x + Math.floor(w / 2);
+                    doorY = y;
+                    break;
+                case 1: // Bottom
+                    doorX = x + Math.floor(w / 2);
+                    doorY = y + h - 1;
+                    break;
+                case 2: // Left
+                    doorX = x;
+                    doorY = y + Math.floor(h / 2);
+                    break;
+                case 3: // Right
+                    doorX = x + w - 1;
+                    doorY = y + Math.floor(h / 2);
+                    break;
+            }
+
+            if (doorY >= 0 && doorY < mapH && doorX >= 0 && doorX < mapW) {
+                state.mapData[doorY][doorX] = TILE.DOOR;
+            }
+
+            // Store building info
+            const building = {
+                x, y, w, h,
+                type: buildingType.type,
+                furniture: buildingType.furniture,
+                roofColor: `hsl(${randInt(0, 360)}, ${randInt(20, 40)}%, ${randInt(25, 40)}%)`
+            };
+            state.buildings.push(building);
+
+            // Add interior furniture
+            if (state.config.showInteriors) {
+                addBuildingFurniture(building);
+            }
+        }
+
+        function addBuildingFurniture(building) {
+            const interiorX = building.x + 1;
+            const interiorY = building.y + 1;
+            const interiorW = building.w - 2;
+            const interiorH = building.h - 2;
+
+            building.furniture.forEach(item => {
+                // Find random spot inside building
+                const fx = interiorX + randInt(0, interiorW - 1);
+                const fy = interiorY + randInt(0, interiorH - 1);
+
+                // Check if spot is floor
+                if (state.mapData[fy] && state.mapData[fy][fx] === TILE.FLOOR) {
+                    state.entities.push({
+                        type: item,
+                        x: fx,
+                        y: fy,
+                        building: building.type
+                    });
+                }
+            });
+
+            // Add light source for taverns and temples
+            if (building.type === 'tavern' || building.type === 'temple') {
+                state.lights.push({
+                    x: building.x + Math.floor(building.w / 2),
+                    y: building.y + Math.floor(building.h / 2),
+                    radius: Math.max(building.w, building.h) * 1.5,
+                    color: building.type === 'temple' ? [200, 200, 255] : [255, 180, 100],
+                    intensity: 0.8,
+                    flicker: building.type === 'tavern'
+                });
+            }
+        }
+
+        // ============================================================================
+        // FORTRESS GENERATION
+        // ============================================================================
+
+        function generateFortress() {
+            const w = state.config.width;
+            const h = state.config.height;
+            const corridorW = state.config.corridorWidth;
+
+            // Start with all walls
+            state.mapData = createEmptyMap(w, h, TILE.WALL);
+
+            // Create outer courtyard
+            const padding = 5;
+            for (let y = padding; y < h - padding; y++) {
+                for (let x = padding; x < w - padding; x++) {
+                    state.mapData[y][x] = TILE.FLOOR;
+                }
+            }
+
+            // Add internal walls (grid pattern)
+            const cellSize = Math.floor(8 * state.config.roomSizeMultiplier);
+            const wallThickness = state.config.wallThickness;
+
+            for (let y = padding; y < h - padding; y += cellSize) {
+                for (let x = padding; x < w - padding; x++) {
+                    for (let t = 0; t < wallThickness; t++) {
+                        if (y + t < h) state.mapData[y + t][x] = TILE.WALL;
+                    }
+                }
+            }
+
+            for (let x = padding; x < w - padding; x += cellSize) {
+                for (let y = padding; y < h - padding; y++) {
+                    for (let t = 0; t < wallThickness; t++) {
+                        if (x + t < w) state.mapData[y][x + t] = TILE.WALL;
+                    }
+                }
+            }
+
+            // Carve doorways
+            for (let y = padding + cellSize; y < h - padding; y += cellSize) {
+                for (let x = padding; x < w - padding; x += cellSize) {
+                    // Horizontal doorway
+                    const hDoorX = x + Math.floor(cellSize / 2);
+                    for (let c = 0; c < corridorW; c++) {
+                        for (let t = 0; t < wallThickness; t++) {
+                            if (y + t < h && hDoorX + c < w) {
+                                state.mapData[y + t][hDoorX + c] = TILE.FLOOR;
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (let x = padding + cellSize; x < w - padding; x += cellSize) {
+                for (let y = padding; y < h - padding; y += cellSize) {
+                    // Vertical doorway
+                    const vDoorY = y + Math.floor(cellSize / 2);
+                    for (let c = 0; c < corridorW; c++) {
+                        for (let t = 0; t < wallThickness; t++) {
+                            if (vDoorY + c < h && x + t < w) {
+                                state.mapData[vDoorY + c][x + t] = TILE.FLOOR;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // ============================================================================
+        // WATER LEVEL & DETAILS
+        // ============================================================================
+
+        function applyWaterLevel() {
+            const w = state.config.width;
+            const h = state.config.height;
+            const level = state.config.waterLevel;
+
+            // Simple elevation simulation: distance from center or edges
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    if (state.mapData[y][x] === TILE.FLOOR) {
+                        // Edge tiles are "lower"
+                        const edgeDist = Math.min(x, y, w - x - 1, h - y - 1);
+                        const threshold = level * Math.max(w, h) * 0.3;
+
+                        if (edgeDist < threshold && rand() < 0.5) {
+                            state.mapData[y][x] = TILE.WATER;
+                        }
+                    }
+                }
+            }
+        }
+
+        function generateDetails() {
+            const w = state.config.width;
+            const h = state.config.height;
+            const density = state.config.detailDensity;
+            const biome = state.config.biome;
+
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const tile = state.mapData[y][x];
+
+                    if (tile === TILE.FLOOR || tile === TILE.GRASS) {
+                        if (rand() < density * 0.08) {
+                            let entityType;
+
+                            if (biome === 'dungeon' || biome === 'fortress') {
+                                const r = rand();
+                                if (r < 0.25) entityType = 'crate';
+                                else if (r < 0.4) entityType = 'barrel';
+                                else if (r < 0.5) entityType = 'debris';
+                                else if (r < 0.55) entityType = 'torch';
+                                else if (r < 0.6) entityType = 'bones';
+                            } else if (biome === 'cavern') {
+                                const r = rand();
+                                if (r < 0.4) entityType = 'mushroom';
+                                else if (r < 0.6) entityType = 'rock';
+                                else if (r < 0.65) entityType = 'crystal';
+                            } else if (biome === 'town') {
+                                if (tile === TILE.GRASS) {
+                                    if (rand() < 0.6) entityType = 'tree';
+                                    else entityType = 'bush';
+                                }
+                            }
+
+                            if (entityType) {
+                                state.entities.push({ type: entityType, x, y });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function generateLightSources() {
+            // Add lights for torch entities
+            state.entities.forEach(ent => {
+                if (ent.type === 'torch') {
+                    state.lights.push({
+                        x: ent.x,
+                        y: ent.y,
+                        radius: 6 + rand() * 3,
+                        color: [255, 180, 80],
+                        intensity: state.config.torchIntensity,
+                        flicker: true
+                    });
+                } else if (ent.type === 'crystal') {
+                    state.lights.push({
+                        x: ent.x,
+                        y: ent.y,
+                        radius: 4,
+                        color: [100, 200, 255],
+                        intensity: 0.5,
+                        flicker: false
+                    });
+                }
+            });
+
+            // Add some ambient lights in rooms
+            if (state.config.biome !== 'cavern') {
+                const numAmbient = Math.floor(state.config.width * state.config.height * 0.002);
+                for (let i = 0; i < numAmbient; i++) {
+                    const x = randInt(5, state.config.width - 5);
+                    const y = randInt(5, state.config.height - 5);
+
+                    if (state.mapData[y][x] === TILE.FLOOR) {
+                        state.lights.push({
+                            x, y,
+                            radius: 8 + rand() * 4,
+                            color: [255, 200, 150],
+                            intensity: 0.4 + rand() * 0.3,
+                            flicker: rand() > 0.5
+                        });
+                    }
+                }
+            }
+        }
+
+        // ============================================================================
+        // LAYERED RENDERING SYSTEM
+        // ============================================================================
+
+        function renderLoop() {
+            const now = performance.now();
+            const delta = now - state.rendering.lastFrameTime;
+
+            // Calculate FPS
+            if (delta > 0) {
+                state.rendering.fps = Math.round(1000 / delta);
+            }
+            state.rendering.lastFrameTime = now;
+
+            // Update flicker phase
+            if (state.config.torchFlicker) {
+                state.rendering.flickerPhase += delta * 0.005;
+            }
+
+            // Render static layer if dirty
+            if (state.rendering.staticDirty) {
+                renderStaticLayer();
+                state.rendering.staticDirty = false;
+            }
+
+            // Render light layer if dirty or flickering
+            if (state.rendering.lightDirty || (state.config.enableLighting && state.config.torchFlicker)) {
+                renderLightLayer();
+                state.rendering.lightDirty = false;
+            }
+
+            // Composite to main canvas
+            renderMainCanvas();
+
+            // Update FPS display
+            if (state.config.showFps) {
+                fpsCounter.textContent = `${state.rendering.fps} FPS`;
+                fpsCounter.style.display = 'block';
+            } else {
+                fpsCounter.style.display = 'none';
+            }
+
+            state.rendering.animationFrame = requestAnimationFrame(renderLoop);
+        }
+
+        function renderStaticLayer() {
+            const ctx = staticCtx;
+            const ts = state.config.gridSize;
+            const w = state.config.width;
+            const h = state.config.height;
+            const palette = PALETTES[state.config.palette];
+
+            // Clear
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, staticCanvas.width, staticCanvas.height);
+
+            // Draw tiles
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const tile = state.mapData[y][x];
+                    const px = x * ts;
+                    const py = y * ts;
+
+                    switch (tile) {
+                        case TILE.FLOOR:
+                            drawFloorTile(ctx, px, py, ts, palette);
+                            break;
+                        case TILE.WALL:
+                            if (hasAdjacentFloor(x, y)) {
+                                drawWallTile(ctx, px, py, ts, x, y, palette);
+                            }
+                            break;
+                        case TILE.WATER:
+                            drawWaterTile(ctx, px, py, ts, palette);
+                            break;
+                        case TILE.GRASS:
+                            drawGrassTile(ctx, px, py, ts, palette);
+                            break;
+                        case TILE.ROAD:
+                            drawRoadTile(ctx, px, py, ts, palette);
+                            break;
+                        case TILE.DOOR:
+                            drawDoorTile(ctx, px, py, ts, palette);
+                            break;
+                    }
+                }
+            }
+
+            // Draw building roofs if not showing interiors
+            if (state.config.biome === 'town' && !state.config.showInteriors) {
+                state.buildings.forEach(building => {
+                    drawBuildingRoof(ctx, building, ts);
+                });
+            }
+
+            // Draw entities
+            state.entities.forEach(ent => {
+                drawEntity(ctx, ent, ts, palette);
+            });
+
+            // Ambient occlusion
+            if (state.config.ambientOcclusion) {
+                drawAmbientOcclusion(ctx, ts);
+            }
+
+            // Grid
+            if (state.config.showGrid) {
+                drawGrid(ctx, ts, w, h);
+            }
+        }
+
+        function drawFloorTile(ctx, px, py, ts, palette) {
+            ctx.fillStyle = palette.floor;
+            ctx.fillRect(px, py, ts, ts);
+
+            // Texture variation
+            if (rand() > 0.7) {
+                ctx.fillStyle = palette.floorAlt;
+                ctx.globalAlpha = 0.3;
+                ctx.fillRect(px + rand() * ts * 0.3, py + rand() * ts * 0.3,
+                           ts * 0.4 + rand() * ts * 0.3, ts * 0.4 + rand() * ts * 0.3);
+                ctx.globalAlpha = 1;
+            }
+
+            // Cracks
+            if (rand() > 0.9) {
+                ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(px + rand() * ts, py + rand() * ts);
+                ctx.lineTo(px + rand() * ts, py + rand() * ts);
+                ctx.stroke();
+            }
+        }
+
+        function drawWallTile(ctx, px, py, ts, x, y, palette) {
+            const thickness = state.config.wallThickness;
+
+            ctx.fillStyle = palette.wall;
+            ctx.fillRect(px, py, ts, ts);
+
+            // Top highlight
+            ctx.fillStyle = palette.wallHighlight;
+            ctx.fillRect(px, py, ts, ts * 0.1 * thickness);
+
+            // Shadow cast
+            if (y + 1 < state.config.height && state.mapData[y + 1][x] !== TILE.WALL) {
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.fillRect(px, py + ts, ts, ts * 0.2 * thickness);
+            }
+
+            // Side shadow
+            if (x + 1 < state.config.width && state.mapData[y][x + 1] !== TILE.WALL) {
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fillRect(px + ts, py, ts * 0.1 * thickness, ts);
+            }
+        }
+
+        function drawWaterTile(ctx, px, py, ts, palette) {
+            ctx.fillStyle = palette.water;
+            ctx.fillRect(px, py, ts, ts);
+
+            // Wave effect
+            ctx.fillStyle = 'rgba(255,255,255,0.1)';
+            const phase = (px + py) * 0.01 + state.rendering.flickerPhase;
+            ctx.globalAlpha = 0.3 + Math.sin(phase) * 0.2;
+            ctx.fillRect(px, py, ts, ts * 0.3);
+            ctx.globalAlpha = 1;
+        }
+
+        function drawGrassTile(ctx, px, py, ts, palette) {
+            ctx.fillStyle = palette.grass;
+            ctx.fillRect(px, py, ts, ts);
+
+            // Grass texture
+            ctx.fillStyle = 'rgba(0,0,0,0.1)';
+            for (let i = 0; i < 3; i++) {
+                const gx = px + rand() * ts;
+                const gy = py + rand() * ts;
+                ctx.fillRect(gx, gy, 2, 2);
+            }
+        }
+
+        function drawRoadTile(ctx, px, py, ts, palette) {
+            ctx.fillStyle = palette.road;
+            ctx.fillRect(px, py, ts, ts);
+
+            // Road texture
+            ctx.fillStyle = 'rgba(0,0,0,0.15)';
+            if (rand() > 0.8) {
+                ctx.beginPath();
+                ctx.arc(px + rand() * ts, py + rand() * ts, rand() * 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawDoorTile(ctx, px, py, ts, palette) {
+            ctx.fillStyle = palette.floor;
+            ctx.fillRect(px, py, ts, ts);
+
+            // Door frame
+            ctx.fillStyle = '#5a3a1a';
+            ctx.fillRect(px + ts * 0.1, py + ts * 0.1, ts * 0.8, ts * 0.8);
+
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(px + ts * 0.2, py + ts * 0.2, ts * 0.6, ts * 0.6);
+        }
+
+        function drawBuildingRoof(ctx, building, ts) {
+            const px = building.x * ts;
+            const py = building.y * ts;
+            const pw = building.w * ts;
+            const ph = building.h * ts;
+
+            ctx.fillStyle = building.roofColor;
+            ctx.fillRect(px, py, pw, ph);
+
+            // Roof ridge
+            ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(px + pw, py + ph);
+            ctx.moveTo(px + pw, py);
+            ctx.lineTo(px, py + ph);
+            ctx.stroke();
+
+            // Chimney for some buildings
+            if (rand() > 0.6) {
+                ctx.fillStyle = '#333';
+                ctx.fillRect(px + pw * 0.7, py + ph * 0.2, ts * 0.3, ts * 0.3);
+            }
+        }
+
+        function hasAdjacentFloor(x, y) {
+            const dirs = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, -1], [1, -1], [-1, 1]];
+            for (const [dx, dy] of dirs) {
+                const nx = x + dx;
+                const ny = y + dy;
+                if (nx >= 0 && nx < state.config.width && ny >= 0 && ny < state.config.height) {
+                    const tile = state.mapData[ny][nx];
+                    if (tile !== TILE.WALL && tile !== TILE.VOID) return true;
+                }
+            }
+            return false;
+        }
+
+        function drawEntity(ctx, ent, ts, palette) {
+            const px = ent.x * ts;
+            const py = ent.y * ts;
+            const cx = px + ts / 2;
+            const cy = py + ts / 2;
+
+            switch (ent.type) {
+                case 'crate':
+                    ctx.fillStyle = '#8b4513';
+                    ctx.fillRect(px + ts * 0.15, py + ts * 0.15, ts * 0.7, ts * 0.7);
+                    ctx.strokeStyle = '#5e2f0d';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(px + ts * 0.15, py + ts * 0.15, ts * 0.7, ts * 0.7);
+                    break;
+
+                case 'barrel':
+                    ctx.fillStyle = '#6b4423';
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, ts * 0.3, ts * 0.35, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#3a2a1a';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    break;
+
+                case 'torch':
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(cx - 3, cy - ts * 0.2, 6, ts * 0.4);
+                    ctx.fillStyle = '#ff6600';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy - ts * 0.25, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'debris':
+                    ctx.fillStyle = '#555';
+                    for (let i = 0; i < 4; i++) {
+                        ctx.fillRect(px + rand() * ts * 0.8, py + rand() * ts * 0.8,
+                                   rand() * 8 + 2, rand() * 8 + 2);
+                    }
+                    break;
+
+                case 'bones':
+                    ctx.fillStyle = '#d4c4a4';
+                    ctx.beginPath();
+                    ctx.ellipse(cx, cy, ts * 0.2, ts * 0.1, rand() * Math.PI, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'mushroom':
+                    ctx.fillStyle = '#8a4a8a';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, ts * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#e0b0ff';
+                    ctx.beginPath();
+                    ctx.arc(cx - 3, cy - 3, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'rock':
+                    ctx.fillStyle = '#555';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, ts * 0.25, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'crystal':
+                    ctx.fillStyle = '#88ddff';
+                    ctx.beginPath();
+                    ctx.moveTo(cx, py + ts * 0.2);
+                    ctx.lineTo(cx + ts * 0.2, cy);
+                    ctx.lineTo(cx, py + ts * 0.8);
+                    ctx.lineTo(cx - ts * 0.2, cy);
+                    ctx.closePath();
+                    ctx.fill();
+                    break;
+
+                case 'tree':
+                    // Shadow
+                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.beginPath();
+                    ctx.arc(cx + 4, cy + 4, ts * 0.35, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Foliage
+                    ctx.fillStyle = '#228b22';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, ts * 0.35, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#32cd32';
+                    ctx.beginPath();
+                    ctx.arc(cx - 5, cy - 5, ts * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'bush':
+                    ctx.fillStyle = '#3a5a2a';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, ts * 0.25, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                // Furniture
+                case 'bed':
+                    ctx.fillStyle = '#8b4513';
+                    ctx.fillRect(px + ts * 0.1, py + ts * 0.2, ts * 0.8, ts * 0.6);
+                    ctx.fillStyle = '#ddd';
+                    ctx.fillRect(px + ts * 0.15, py + ts * 0.25, ts * 0.3, ts * 0.5);
+                    break;
+
+                case 'table':
+                    ctx.fillStyle = '#6b4423';
+                    ctx.fillRect(px + ts * 0.2, py + ts * 0.2, ts * 0.6, ts * 0.6);
+                    break;
+
+                case 'chair':
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(px + ts * 0.3, py + ts * 0.3, ts * 0.4, ts * 0.4);
+                    break;
+
+                case 'chest':
+                    ctx.fillStyle = '#8b4513';
+                    ctx.fillRect(px + ts * 0.2, py + ts * 0.3, ts * 0.6, ts * 0.4);
+                    ctx.fillStyle = '#ffd700';
+                    ctx.fillRect(cx - 3, py + ts * 0.4, 6, 6);
+                    break;
+
+                case 'anvil':
+                    ctx.fillStyle = '#444';
+                    ctx.fillRect(px + ts * 0.2, py + ts * 0.4, ts * 0.6, ts * 0.3);
+                    ctx.fillRect(px + ts * 0.3, py + ts * 0.3, ts * 0.4, ts * 0.4);
+                    break;
+
+                case 'forge':
+                    ctx.fillStyle = '#333';
+                    ctx.fillRect(px + ts * 0.15, py + ts * 0.15, ts * 0.7, ts * 0.7);
+                    ctx.fillStyle = '#ff4400';
+                    ctx.fillRect(px + ts * 0.25, py + ts * 0.25, ts * 0.5, ts * 0.5);
+                    break;
+
+                case 'counter':
+                    ctx.fillStyle = '#6b4423';
+                    ctx.fillRect(px + ts * 0.1, py + ts * 0.3, ts * 0.8, ts * 0.4);
+                    break;
+
+                case 'shelf':
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(px + ts * 0.1, py + ts * 0.2, ts * 0.8, ts * 0.15);
+                    ctx.fillRect(px + ts * 0.1, py + ts * 0.5, ts * 0.8, ts * 0.15);
+                    break;
+
+                case 'altar':
+                    ctx.fillStyle = '#888';
+                    ctx.fillRect(px + ts * 0.2, py + ts * 0.3, ts * 0.6, ts * 0.4);
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'brazier':
+                    ctx.fillStyle = '#444';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, ts * 0.25, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#ff6600';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, ts * 0.15, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'statue':
+                    ctx.fillStyle = '#777';
+                    ctx.fillRect(cx - ts * 0.15, py + ts * 0.2, ts * 0.3, ts * 0.6);
+                    ctx.beginPath();
+                    ctx.arc(cx, py + ts * 0.25, ts * 0.12, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+
+                case 'bar':
+                    ctx.fillStyle = '#5a3a1a';
+                    ctx.fillRect(px + ts * 0.05, py + ts * 0.2, ts * 0.9, ts * 0.3);
+                    break;
+
+                case 'rack':
+                    ctx.fillStyle = '#444';
+                    ctx.fillRect(px + ts * 0.2, py + ts * 0.1, ts * 0.1, ts * 0.8);
+                    ctx.fillRect(px + ts * 0.7, py + ts * 0.1, ts * 0.1, ts * 0.8);
+                    break;
+            }
+        }
+
+        function drawAmbientOcclusion(ctx, ts) {
+            const w = state.config.width;
+            const h = state.config.height;
+
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    if (state.mapData[y][x] !== TILE.WALL && state.mapData[y][x] !== TILE.VOID) {
+                        // Check adjacent walls
+                        const dirs = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+                        for (const [dx, dy] of dirs) {
+                            const nx = x + dx;
+                            const ny = y + dy;
+                            if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                                if (state.mapData[ny][nx] === TILE.WALL) {
+                                    const px = x * ts;
+                                    const py = y * ts;
+                                    const aoSize = ts * 0.15;
+
+                                    if (dx === -1) ctx.fillRect(px, py, aoSize, ts);
+                                    if (dx === 1) ctx.fillRect(px + ts - aoSize, py, aoSize, ts);
+                                    if (dy === -1) ctx.fillRect(px, py, ts, aoSize);
+                                    if (dy === 1) ctx.fillRect(px, py + ts - aoSize, ts, aoSize);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawGrid(ctx, ts, w, h) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+
+            for (let x = 0; x <= w; x++) {
+                ctx.moveTo(x * ts, 0);
+                ctx.lineTo(x * ts, h * ts);
+            }
+
+            for (let y = 0; y <= h; y++) {
+                ctx.moveTo(0, y * ts);
+                ctx.lineTo(w * ts, y * ts);
+            }
+
+            ctx.stroke();
+        }
+
+        // ============================================================================
+        // LIGHTING LAYER
+        // ============================================================================
+
+        function renderLightLayer() {
+            if (!state.config.enableLighting) {
+                lightCtx.clearRect(0, 0, lightCanvas.width, lightCanvas.height);
+                return;
+            }
+
+            const ctx = lightCtx;
+            const ts = state.config.gridSize;
+            const w = lightCanvas.width;
+            const h = lightCanvas.height;
+
+            // Fill with ambient darkness
+            ctx.fillStyle = `rgba(0,0,0,${1 - state.config.ambientLight})`;
+            ctx.fillRect(0, 0, w, h);
+
+            // Draw lights using destination-out to "cut" holes in darkness
+            ctx.globalCompositeOperation = 'destination-out';
+
+            state.lights.forEach(light => {
+                const cx = (light.x + 0.5) * ts;
+                const cy = (light.y + 0.5) * ts;
+                let radius = light.radius * ts;
+                let intensity = light.intensity;
+
+                // Apply flicker
+                if (light.flicker && state.config.torchFlicker) {
+                    const flicker = Math.sin(state.rendering.flickerPhase + light.x * 0.5) * 0.15 +
+                                   Math.sin(state.rendering.flickerPhase * 1.7 + light.y * 0.3) * 0.1;
+                    radius *= (1 + flicker * 0.2);
+                    intensity *= (1 + flicker);
+                }
+
+                const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+                gradient.addColorStop(0, `rgba(255,255,255,${intensity})`);
+                gradient.addColorStop(0.5, `rgba(255,255,255,${intensity * 0.5})`);
+                gradient.addColorStop(1, 'rgba(255,255,255,0)');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Reset composite operation
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Add colored light overlays
+            ctx.globalCompositeOperation = 'lighter';
+
+            state.lights.forEach(light => {
+                const cx = (light.x + 0.5) * ts;
+                const cy = (light.y + 0.5) * ts;
+                let radius = light.radius * ts * 0.7;
+                const [r, g, b] = light.color;
+
+                if (light.flicker && state.config.torchFlicker) {
+                    const flicker = Math.sin(state.rendering.flickerPhase + light.x * 0.5) * 0.15;
+                    radius *= (1 + flicker * 0.2);
+                }
+
+                const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+                gradient.addColorStop(0, `rgba(${r},${g},${b},0.15)`);
+                gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Vignette
+            if (state.config.vignette) {
+                const gradient = ctx.createRadialGradient(w/2, h/2, Math.min(w, h) * 0.3,
+                                                         w/2, h/2, Math.max(w, h) * 0.7);
+                gradient.addColorStop(0, 'rgba(0,0,0,0)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, w, h);
+            }
+        }
+
+        // ============================================================================
+        // MAIN CANVAS COMPOSITING
+        // ============================================================================
+
+        function renderMainCanvas() {
+            const ctx = mainCtx;
+            const v = state.view;
+
+            // Clear
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
+
+            // Apply view transform
+            ctx.save();
+            ctx.translate(v.offsetX, v.offsetY);
+            ctx.scale(v.scale, v.scale);
+
+            // Draw static layer
+            ctx.drawImage(staticCanvas, 0, 0);
+
+            // Draw light layer
+            if (state.config.enableLighting) {
+                ctx.drawImage(lightCanvas, 0, 0);
+            }
+
+            ctx.restore();
+        }
+
+        // ============================================================================
+        // VIEW INTERACTIONS
+        // ============================================================================
+
+        viewport.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomIntensity = 0.1;
+            const wheel = e.deltaY < 0 ? 1 : -1;
+            const zoom = Math.exp(wheel * zoomIntensity);
+
+            const rect = viewport.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            const newScale = Math.max(0.1, Math.min(5, state.view.scale * zoom));
+            const scaleRatio = newScale / state.view.scale;
+
+            state.view.offsetX = mouseX - (mouseX - state.view.offsetX) * scaleRatio;
+            state.view.offsetY = mouseY - (mouseY - state.view.offsetY) * scaleRatio;
+            state.view.scale = newScale;
+        }, { passive: false });
+
+        viewport.addEventListener('mousedown', (e) => {
+            state.view.isDragging = true;
+            state.view.lastX = e.clientX;
+            state.view.lastY = e.clientY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!state.view.isDragging) return;
+
+            state.view.offsetX += e.clientX - state.view.lastX;
+            state.view.offsetY += e.clientY - state.view.lastY;
+            state.view.lastX = e.clientX;
+            state.view.lastY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => {
+            state.view.isDragging = false;
+        });
+
+        // Touch support
+        viewport.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                state.view.isDragging = true;
+                state.view.lastX = e.touches[0].clientX;
+                state.view.lastY = e.touches[0].clientY;
+            }
+        });
+
+        viewport.addEventListener('touchmove', (e) => {
+            if (!state.view.isDragging || e.touches.length !== 1) return;
+            e.preventDefault();
+
+            state.view.offsetX += e.touches[0].clientX - state.view.lastX;
+            state.view.offsetY += e.touches[0].clientY - state.view.lastY;
+            state.view.lastX = e.touches[0].clientX;
+            state.view.lastY = e.touches[0].clientY;
+        }, { passive: false });
+
+        viewport.addEventListener('touchend', () => {
+            state.view.isDragging = false;
+        });
+
+        // ============================================================================
+        // UI BINDINGS
+        // ============================================================================
+
+        function toggleSection(header) {
+            header.classList.toggle('collapsed');
+            const content = header.nextElementSibling;
+            content.classList.toggle('collapsed');
+        }
+
+        // Slider value displays
+        document.getElementById('corridorWidth').addEventListener('input', (e) => {
+            document.getElementById('corridorWidthVal').textContent = e.target.value;
+        });
+
+        document.getElementById('roomSizeMultiplier').addEventListener('input', (e) => {
+            document.getElementById('roomSizeVal').textContent = (e.target.value / 10).toFixed(1) + 'x';
+        });
+
+        document.getElementById('roomDensity').addEventListener('input', (e) => {
+            document.getElementById('roomDensityVal').textContent = e.target.value + '%';
+        });
+
+        document.getElementById('buildingDensity').addEventListener('input', (e) => {
+            document.getElementById('buildingDensityVal').textContent = e.target.value + '%';
+        });
+
+        document.getElementById('ambientLight').addEventListener('input', (e) => {
+            document.getElementById('ambientVal').textContent = e.target.value + '%';
+        });
+
+        document.getElementById('torchIntensity').addEventListener('input', (e) => {
+            document.getElementById('torchIntensityVal').textContent = e.target.value + '%';
+        });
+
+        document.getElementById('wallThickness').addEventListener('input', (e) => {
+            const labels = ['Thin', 'Normal', 'Thick'];
+            document.getElementById('wallThicknessVal').textContent = labels[e.target.value - 1];
+        });
+
+        document.getElementById('waterLevel').addEventListener('input', (e) => {
+            document.getElementById('waterLevelVal').textContent = e.target.value + '%';
+        });
+
+        document.getElementById('detailDensity').addEventListener('input', (e) => {
+            document.getElementById('detailDensityVal').textContent = e.target.value + '%';
+        });
+
+        // Biome change - show/hide town settings
+        document.getElementById('biomeSelect').addEventListener('change', (e) => {
+            const townSettings = document.getElementById('townSettings');
+            townSettings.style.display = e.target.value === 'town' ? 'block' : 'none';
+        });
+
+        // Show grid toggle
+        document.getElementById('showGrid').addEventListener('change', (e) => {
+            state.config.showGrid = e.target.checked;
+            state.rendering.staticDirty = true;
+        });
+
+        // Show interiors toggle
+        document.getElementById('showInteriors').addEventListener('change', (e) => {
+            state.config.showInteriors = e.target.checked;
+            state.rendering.staticDirty = true;
+        });
+
+        // Lighting toggles
+        ['enableLighting', 'torchFlicker', 'ambientOcclusion', 'vignette'].forEach(id => {
+            document.getElementById(id).addEventListener('change', (e) => {
+                state.config[id] = e.target.checked;
+                state.rendering.lightDirty = true;
+                if (id === 'ambientOcclusion') state.rendering.staticDirty = true;
+            });
+        });
+
+        // Generate button
+        document.getElementById('generateBtn').addEventListener('click', generate);
+
+        // Export WebP
+        document.getElementById('exportImgBtn').addEventListener('click', () => {
+            // Create export canvas at full resolution
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = staticCanvas.width;
+            exportCanvas.height = staticCanvas.height;
+            const exportCtx = exportCanvas.getContext('2d');
+
+            exportCtx.drawImage(staticCanvas, 0, 0);
+            if (state.config.enableLighting) {
+                exportCtx.drawImage(lightCanvas, 0, 0);
+            }
+
+            const link = document.createElement('a');
+            link.download = `map-${state.config.seed}-${Date.now()}.webp`;
+            link.href = exportCanvas.toDataURL('image/webp', 0.92);
+            link.click();
+
+            statusBar.innerText = 'Map exported as WebP';
+        });
+
+        // Export JSON
+        document.getElementById('exportJsonBtn').addEventListener('click', () => {
+            const data = {
+                version: '2.0',
+                config: state.config,
+                map: state.mapData,
+                entities: state.entities,
+                lights: state.lights,
+                buildings: state.buildings
+            };
+
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.download = `map-${state.config.seed}.json`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+
+            statusBar.innerText = 'Map saved as JSON';
+        });
+
+        // Import JSON
+        document.getElementById('importJsonBtn').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target.result);
+
+                    state.config = { ...state.config, ...data.config };
+                    state.mapData = data.map;
+                    state.entities = data.entities || [];
+                    state.lights = data.lights || [];
+                    state.buildings = data.buildings || [];
+
+                    // Update UI
+                    document.getElementById('mapWidth').value = state.config.width;
+                    document.getElementById('mapHeight').value = state.config.height;
+                    document.getElementById('biomeSelect').value = state.config.biome;
+                    document.getElementById('seedInput').value = state.config.seed;
+
+                    // Resize canvases
+                    const canvasWidth = state.config.width * state.config.gridSize;
+                    const canvasHeight = state.config.height * state.config.gridSize;
+                    [staticCanvas, lightCanvas, mainCanvas].forEach(c => {
+                        c.width = canvasWidth;
+                        c.height = canvasHeight;
+                    });
+
+                    state.rendering.staticDirty = true;
+                    state.rendering.lightDirty = true;
+
+                    if (!state.rendering.animationFrame) {
+                        renderLoop();
+                    }
+
+                    statusBar.innerText = 'Map loaded successfully';
+                } catch (err) {
+                    alert('Failed to load map: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // ============================================================================
+        // PALETTE SELECTION
+        // ============================================================================
+
+        function initPaletteGrid() {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = '';
+
+            Object.keys(PALETTES).forEach(key => {
+                const palette = PALETTES[key];
+                const swatch = document.createElement('div');
+                swatch.className = 'palette-swatch' + (key === state.config.palette ? ' active' : '');
+                swatch.style.background = `linear-gradient(135deg, ${palette.floor} 50%, ${palette.wall} 50%)`;
+                swatch.title = palette.name;
+                swatch.onclick = () => {
+                    document.querySelectorAll('.palette-swatch').forEach(s => s.classList.remove('active'));
+                    swatch.classList.add('active');
+                    state.config.palette = key;
+                    state.rendering.staticDirty = true;
+                };
+                grid.appendChild(swatch);
+            });
+        }
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        function init() {
+            initPaletteGrid();
+            generate();
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
