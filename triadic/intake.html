@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Intake — Triadic Workflow</title>
+    <style>
+        :root {
+            --bg-base: #121212;
+            --bg-elevated: #1e1e2e;
+            --bg-card: #252536;
+            --bg-input: #1a1a28;
+            --border-default: #3a3a4a;
+            --border-focus: #a78bfa;
+            --text-primary: #e8e8ed;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b6b7b;
+            --accent: #a78bfa;
+            --accent-dim: rgba(167, 139, 250, 0.15);
+            --accent-glow: rgba(167, 139, 250, 0.3);
+            --success: #4ade80;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border-default);
+            padding: 24px 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .header h1 span {
+            color: var(--accent);
+        }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+
+        .progress-bar {
+            width: 120px;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 32px 24px 100px;
+        }
+
+        /* Intro */
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 32px;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-default);
+        }
+
+        .intro p {
+            color: var(--text-secondary);
+            font-size: 1em;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section - Initial Input */
+        .hero-section {
+            background: var(--bg-elevated);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-default);
+        }
+
+        .hero-section h2 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .hero-section .hint {
+            color: var(--text-muted);
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .hero-textarea {
+            width: 100%;
+            min-height: 160px;
+            padding: 16px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-default);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1em;
+            font-family: inherit;
+            line-height: 1.7;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* Accordion Sections */
+        .accordion {
+            margin-bottom: 12px;
+        }
+
+        .accordion-header {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            padding: 18px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s, border-color 0.2s;
+            user-select: none;
+        }
+
+        .accordion-header:hover {
+            background: var(--bg-card);
+        }
+
+        .accordion.open .accordion-header {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom-color: transparent;
+            background: var(--bg-card);
+        }
+
+        .accordion-header h3 {
+            font-size: 0.95em;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accordion-header .badge {
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .accordion-header .badge.filled {
+            background: var(--accent);
+            color: var(--bg-base);
+        }
+
+        .accordion-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        .accordion.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-default);
+            border-top: none;
+            border-bottom-left-radius: var(--radius-md);
+            border-bottom-right-radius: var(--radius-md);
+            padding: 24px;
+        }
+
+        .accordion.open .accordion-content {
+            display: block;
+        }
+
+        /* Form Elements */
+        .field-group {
+            margin-bottom: 24px;
+        }
+
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .field-hint {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.95em;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* Inline Fields */
+        .inline-fields {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .inline-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Checkbox Grid */
+        .checkbox-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-default);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-size: 0.9em;
+        }
+
+        .chip:hover {
+            border-color: var(--text-muted);
+        }
+
+        .chip.selected {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .chip input {
+            display: none;
+        }
+
+        .chip-check {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-default);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .chip.selected .chip-check {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .chip.selected .chip-check svg {
+            opacity: 1;
+        }
+
+        .chip-check svg {
+            width: 10px;
+            height: 10px;
+            color: var(--bg-base);
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        /* Radio Cards */
+        .radio-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .radio-card:hover {
+            border-color: var(--text-muted);
+        }
+
+        .radio-card.selected {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+        }
+
+        .radio-card input {
+            display: none;
+        }
+
+        .radio-circle {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-default);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+
+        .radio-card.selected .radio-circle {
+            border-color: var(--accent);
+        }
+
+        .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .radio-card.selected .radio-circle::after {
+            opacity: 1;
+        }
+
+        .radio-card span {
+            font-size: 0.9em;
+            color: var(--text-primary);
+        }
+
+        /* Section Subheader */
+        .section-subheader {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-default);
+        }
+
+        .section-subheader:first-child {
+            margin-top: 0;
+        }
+
+        /* Other Input */
+        .other-field {
+            margin-top: 12px;
+        }
+
+        .other-field input {
+            max-width: 300px;
+        }
+
+        /* Conditional Sections */
+        .conditional-section {
+            display: none;
+        }
+
+        .conditional-section.visible {
+            display: block;
+        }
+
+        /* Floating Action Bar */
+        .action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-elevated);
+            border-top: 1px solid var(--border-default);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-base);
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-default);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-default);
+            color: var(--text-primary);
+        }
+
+        /* Output Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 24px;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-elevated);
+            border-radius: var(--radius-lg);
+            max-width: 700px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-default);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-default);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: background 0.15s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .output-content {
+            background: var(--bg-base);
+            padding: 20px;
+            border-radius: var(--radius-md);
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.85em;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            color: var(--text-secondary);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-default);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .copy-success {
+            color: var(--success);
+            font-size: 0.9em;
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-success.visible {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+
+            .container {
+                padding: 20px 16px 100px;
+            }
+
+            .hero-section,
+            .accordion-content {
+                padding: 20px;
+            }
+
+            .chip {
+                padding: 8px 12px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1><span>Triadic</span> Project Intake</h1>
+            <div class="progress-indicator">
+                <span id="progressText">0 fields</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Intro -->
+        <div class="intro">
+            <p>Fill out as much or as little as you want. Start with what the project is — everything else is optional context.</p>
+        </div>
+
+        <!-- Hero Section: What is this project? -->
+        <section class="hero-section">
+            <h2>What is this project?</h2>
+            <p class="hint">Describe it in your own words. One sentence or ten paragraphs — whatever feels right.</p>
+            <textarea class="hero-textarea" id="whatIsThis" data-track="true"></textarea>
+        </section>
+
+        <!-- Project Identity -->
+        <div class="accordion open" data-accordion>
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>
+                    Project Identity
+                    <span class="badge" id="badge-identity">Optional</span>
+                </h3>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+            <div class="accordion-content">
+                <div class="inline-fields">
+                    <div class="field-group">
+                        <label class="field-label">Project Name</label>
+                        <input type="text" id="projectName" data-track="true">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Code (3-4 letters)</label>
+                        <input type="text" id="projectCode" maxlength="4" style="text-transform: uppercase;" data-track="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Type -->
+        <div class="accordion" data-accordion>
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>
+                    Project Type
+                    <span class="badge" id="badge-type">Optional</span>
+                </h3>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+            <div class="accordion-content">
+                <div class="checkbox-grid" id="projectTypes">
+                    <label class="chip"><input type="checkbox" value="Software / Application" data-category="technical" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Software</span></label>
+                    <label class="chip"><input type="checkbox" value="Game Development" data-category="technical" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Game Dev</span></label>
+                    <label class="chip"><input type="checkbox" value="API / Backend" data-category="technical" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>API / Backend</span></label>
+                    <label class="chip"><input type="checkbox" value="Frontend / UI" data-category="technical" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Frontend / UI</span></label>
+                    <label class="chip"><input type="checkbox" value="Data Pipeline" data-category="technical" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Data Pipeline</span></label>
+                    <label class="chip"><input type="checkbox" value="Automation / Scripts" data-category="technical" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Automation</span></label>
+                    <label class="chip"><input type="checkbox" value="Creative Writing" data-category="creative" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Writing</span></label>
+                    <label class="chip"><input type="checkbox" value="Worldbuilding" data-category="creative" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Worldbuilding</span></label>
+                    <label class="chip"><input type="checkbox" value="Game Design Document" data-category="creative" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>GDD</span></label>
+                    <label class="chip"><input type="checkbox" value="Music / Audio" data-category="creative" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Music / Audio</span></label>
+                    <label class="chip"><input type="checkbox" value="Art Direction" data-category="creative" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Art Direction</span></label>
+                    <label class="chip"><input type="checkbox" value="Research / Analysis" data-category="other" onchange="handleTypeChange()"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Research</span></label>
+                </div>
+                <div class="other-field">
+                    <input type="text" id="projectTypeOther" placeholder="Other type..." data-track="true">
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Stack (Conditional) -->
+        <div class="accordion conditional-section" data-accordion data-condition="technical" id="technicalSection">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>
+                    Technical Stack
+                    <span class="badge" id="badge-tech">Optional</span>
+                </h3>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+            <div class="accordion-content">
+                <p class="section-subheader">Languages</p>
+                <div class="checkbox-grid" id="languages">
+                    <label class="chip"><input type="checkbox" value="Python"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Python</span></label>
+                    <label class="chip"><input type="checkbox" value="JavaScript"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>JavaScript</span></label>
+                    <label class="chip"><input type="checkbox" value="TypeScript"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>TypeScript</span></label>
+                    <label class="chip"><input type="checkbox" value="C#"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>C#</span></label>
+                    <label class="chip"><input type="checkbox" value="C++"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>C++</span></label>
+                    <label class="chip"><input type="checkbox" value="Rust"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Rust</span></label>
+                    <label class="chip"><input type="checkbox" value="Go"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Go</span></label>
+                    <label class="chip"><input type="checkbox" value="GDScript"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>GDScript</span></label>
+                    <label class="chip"><input type="checkbox" value="Lua"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Lua</span></label>
+                    <label class="chip"><input type="checkbox" value="SQL"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>SQL</span></label>
+                </div>
+                <div class="other-field">
+                    <input type="text" id="languageOther" placeholder="Other languages..." data-track="true">
+                </div>
+
+                <p class="section-subheader">Frameworks / Engines</p>
+                <div class="checkbox-grid" id="frameworks">
+                    <label class="chip"><input type="checkbox" value="React"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>React</span></label>
+                    <label class="chip"><input type="checkbox" value="Next.js"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Next.js</span></label>
+                    <label class="chip"><input type="checkbox" value="Node.js"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Node.js</span></label>
+                    <label class="chip"><input type="checkbox" value="FastAPI"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>FastAPI</span></label>
+                    <label class="chip"><input type="checkbox" value="Django"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Django</span></label>
+                    <label class="chip"><input type="checkbox" value="Unity"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Unity</span></label>
+                    <label class="chip"><input type="checkbox" value="Unreal"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Unreal</span></label>
+                    <label class="chip"><input type="checkbox" value="Godot"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Godot</span></label>
+                    <label class="chip"><input type="checkbox" value=".NET"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>.NET</span></label>
+                </div>
+                <div class="other-field">
+                    <input type="text" id="frameworkOther" placeholder="Other frameworks..." data-track="true">
+                </div>
+
+                <p class="section-subheader">Platforms</p>
+                <div class="checkbox-grid" id="platforms">
+                    <label class="chip"><input type="checkbox" value="Web"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Web</span></label>
+                    <label class="chip"><input type="checkbox" value="Windows"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Windows</span></label>
+                    <label class="chip"><input type="checkbox" value="Mac"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Mac</span></label>
+                    <label class="chip"><input type="checkbox" value="Linux"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Linux</span></label>
+                    <label class="chip"><input type="checkbox" value="iOS"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>iOS</span></label>
+                    <label class="chip"><input type="checkbox" value="Android"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Android</span></label>
+                    <label class="chip"><input type="checkbox" value="CLI"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>CLI</span></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Creative Direction (Conditional) -->
+        <div class="accordion conditional-section" data-accordion data-condition="creative" id="creativeSection">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>
+                    Creative Direction
+                    <span class="badge" id="badge-creative">Optional</span>
+                </h3>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+            <div class="accordion-content">
+                <p class="section-subheader">Tone / Mood</p>
+                <div class="checkbox-grid" id="tone">
+                    <label class="chip"><input type="checkbox" value="Dark / Serious"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Dark</span></label>
+                    <label class="chip"><input type="checkbox" value="Light / Humorous"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Light</span></label>
+                    <label class="chip"><input type="checkbox" value="Epic"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Epic</span></label>
+                    <label class="chip"><input type="checkbox" value="Intimate"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Intimate</span></label>
+                    <label class="chip"><input type="checkbox" value="Mysterious"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Mysterious</span></label>
+                    <label class="chip"><input type="checkbox" value="Hopeful"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Hopeful</span></label>
+                    <label class="chip"><input type="checkbox" value="Melancholic"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Melancholic</span></label>
+                    <label class="chip"><input type="checkbox" value="Action-Driven"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Action</span></label>
+                </div>
+
+                <p class="section-subheader">Genre</p>
+                <div class="checkbox-grid" id="genre">
+                    <label class="chip"><input type="checkbox" value="Fantasy"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Fantasy</span></label>
+                    <label class="chip"><input type="checkbox" value="Sci-Fi"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Sci-Fi</span></label>
+                    <label class="chip"><input type="checkbox" value="Horror"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Horror</span></label>
+                    <label class="chip"><input type="checkbox" value="Mystery"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Mystery</span></label>
+                    <label class="chip"><input type="checkbox" value="Romance"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Romance</span></label>
+                    <label class="chip"><input type="checkbox" value="Historical"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Historical</span></label>
+                    <label class="chip"><input type="checkbox" value="Cyberpunk"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Cyberpunk</span></label>
+                    <label class="chip"><input type="checkbox" value="Post-Apocalyptic"><span class="chip-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span><span>Post-Apoc</span></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Constraints -->
+        <div class="accordion" data-accordion>
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>
+                    Constraints
+                    <span class="badge" id="badge-constraints">Optional</span>
+                </h3>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+            <div class="accordion-content">
+                <div class="field-group">
+                    <label class="field-label">Must Have (Non-Negotiables)</label>
+                    <textarea id="mustHave" data-track="true"></textarea>
+                    <p class="field-hint">What absolutely must be true about this project?</p>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Must NOT Have (Boundaries)</label>
+                    <textarea id="mustNotHave" data-track="true"></textarea>
+                    <p class="field-hint">What should this project explicitly avoid?</p>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Known Limitations</label>
+                    <textarea id="limitations" data-track="true"></textarea>
+                    <p class="field-hint">Time, budget, technical constraints, skill gaps, etc.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- References -->
+        <div class="accordion" data-accordion>
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>
+                    References & Inspiration
+                    <span class="badge" id="badge-refs">Optional</span>
+                </h3>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+            <div class="accordion-content">
+                <div class="field-group">
+                    <label class="field-label">Similar projects to reference</label>
+                    <textarea id="references" data-track="true"></textarea>
+                    <p class="field-hint">Games, apps, books, etc. in the same space or that inspired this</p>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">What to emulate</label>
+                    <textarea id="emulate" data-track="true"></textarea>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">What to avoid</label>
+                    <textarea id="avoid" data-track="true"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority -->
+        <div class="accordion" data-accordion>
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <h3>
+                    Priority & Context
+                    <span class="badge" id="badge-priority">Optional</span>
+                </h3>
+                <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+            <div class="accordion-content">
+                <div class="field-group">
+                    <label class="field-label">Timeline</label>
+                    <div class="radio-cards" id="timeline">
+                        <label class="radio-card"><input type="radio" name="timeline" value="No rush"><span class="radio-circle"></span><span>No rush — quality over speed</span></label>
+                        <label class="radio-card"><input type="radio" name="timeline" value="Moderate"><span class="radio-circle"></span><span>Moderate — would like progress soon</span></label>
+                        <label class="radio-card"><input type="radio" name="timeline" value="Urgent"><span class="radio-circle"></span><span>Urgent — need something working quickly</span></label>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">First Priority</label>
+                    <textarea id="firstPriority" data-track="true"></textarea>
+                    <p class="field-hint">What should Opus focus on excavating first? Leave blank to let Opus determine.</p>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Additional Context</label>
+                    <textarea id="additionalContext" data-track="true"></textarea>
+                    <p class="field-hint">Anything else Opus should know before beginning.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <button class="btn btn-secondary" onclick="clearForm()">Clear</button>
+        <button class="btn btn-primary" onclick="generateOutput()">Generate for Opus</button>
+    </div>
+
+    <!-- Output Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Ready for Opus</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="output-content" id="outputContent"></div>
+            </div>
+            <div class="modal-footer">
+                <span class="copy-success" id="copySuccess">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Copied!
+                </span>
+                <button class="btn btn-primary" onclick="copyOutput()">Copy to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chip selection
+        document.querySelectorAll('.chip input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', function() {
+                this.closest('.chip').classList.toggle('selected', this.checked);
+                updateProgress();
+            });
+        });
+
+        // Radio selection
+        document.querySelectorAll('.radio-card input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                this.closest('.radio-cards').querySelectorAll('.radio-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                this.closest('.radio-card').classList.add('selected');
+                updateProgress();
+            });
+        });
+
+        // Track text inputs
+        document.querySelectorAll('input[type="text"], textarea').forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
+
+        // Accordion toggle
+        function toggleAccordion(header) {
+            const accordion = header.closest('.accordion');
+            accordion.classList.toggle('open');
+        }
+
+        // Handle project type changes for conditional sections
+        function handleTypeChange() {
+            const technicalTypes = document.querySelectorAll('#projectTypes input[data-category="technical"]:checked');
+            const creativeTypes = document.querySelectorAll('#projectTypes input[data-category="creative"]:checked');
+
+            const techSection = document.getElementById('technicalSection');
+            const creativeSection = document.getElementById('creativeSection');
+
+            if (technicalTypes.length > 0) {
+                techSection.classList.add('visible');
+            } else {
+                techSection.classList.remove('visible');
+                techSection.classList.remove('open');
+            }
+
+            if (creativeTypes.length > 0) {
+                creativeSection.classList.add('visible');
+            } else {
+                creativeSection.classList.remove('visible');
+                creativeSection.classList.remove('open');
+            }
+
+            updateProgress();
+        }
+
+        // Update progress
+        function updateProgress() {
+            let filled = 0;
+            let total = 0;
+
+            // Count text fields
+            document.querySelectorAll('[data-track="true"]').forEach(el => {
+                total++;
+                if (el.value.trim()) filled++;
+            });
+
+            // Count checkbox selections
+            const checkboxGroups = ['projectTypes', 'languages', 'frameworks', 'platforms', 'tone', 'genre'];
+            checkboxGroups.forEach(id => {
+                const group = document.getElementById(id);
+                if (group) {
+                    total++;
+                    if (group.querySelectorAll('input:checked').length > 0) filled++;
+                }
+            });
+
+            // Count radio selections
+            if (document.querySelector('input[name="timeline"]:checked')) filled++;
+            total++;
+
+            const percent = Math.round((filled / total) * 100);
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = filled + ' fields';
+
+            // Update badges
+            updateBadges();
+        }
+
+        function updateBadges() {
+            // Identity badge
+            const hasIdentity = document.getElementById('projectName').value.trim() || document.getElementById('projectCode').value.trim();
+            setBadge('badge-identity', hasIdentity);
+
+            // Type badge
+            const hasType = document.querySelectorAll('#projectTypes input:checked').length > 0 || document.getElementById('projectTypeOther').value.trim();
+            setBadge('badge-type', hasType);
+
+            // Tech badge
+            const hasTech = document.querySelectorAll('#languages input:checked, #frameworks input:checked, #platforms input:checked').length > 0;
+            setBadge('badge-tech', hasTech);
+
+            // Creative badge
+            const hasCreative = document.querySelectorAll('#tone input:checked, #genre input:checked').length > 0;
+            setBadge('badge-creative', hasCreative);
+
+            // Constraints badge
+            const hasConstraints = document.getElementById('mustHave').value.trim() || document.getElementById('mustNotHave').value.trim() || document.getElementById('limitations').value.trim();
+            setBadge('badge-constraints', hasConstraints);
+
+            // Refs badge
+            const hasRefs = document.getElementById('references').value.trim() || document.getElementById('emulate').value.trim() || document.getElementById('avoid').value.trim();
+            setBadge('badge-refs', hasRefs);
+
+            // Priority badge
+            const hasPriority = document.querySelector('input[name="timeline"]:checked') || document.getElementById('firstPriority').value.trim() || document.getElementById('additionalContext').value.trim();
+            setBadge('badge-priority', hasPriority);
+        }
+
+        function setBadge(id, isFilled) {
+            const badge = document.getElementById(id);
+            if (badge) {
+                badge.textContent = isFilled ? 'Filled' : 'Optional';
+                badge.classList.toggle('filled', isFilled);
+            }
+        }
+
+        // Generate output
+        function generateOutput() {
+            const projectName = document.getElementById('projectName').value || '[Unnamed Project]';
+            const projectCode = document.getElementById('projectCode').value.toUpperCase() || 'XXXX';
+            const date = new Date().toISOString().split('T')[0];
+
+            let output = `# Project Intake: ${projectName}\n\n`;
+            output += `> **Code:** ${projectCode} | **Date:** ${date}\n\n`;
+            output += `---\n\n`;
+
+            // What is this project
+            const whatIsThis = document.getElementById('whatIsThis').value;
+            if (whatIsThis) {
+                output += `## What is this project?\n\n${whatIsThis}\n\n`;
+            }
+
+            // Project Type
+            const types = getChecked('projectTypes');
+            const typeOther = document.getElementById('projectTypeOther').value;
+            if (types.length > 0 || typeOther) {
+                output += `## Project Type\n\n`;
+                output += [...types, typeOther].filter(Boolean).join(', ') + '\n\n';
+            }
+
+            // Technical Stack
+            const langs = getChecked('languages');
+            const langOther = document.getElementById('languageOther')?.value || '';
+            const fws = getChecked('frameworks');
+            const fwOther = document.getElementById('frameworkOther')?.value || '';
+            const plats = getChecked('platforms');
+
+            if (langs.length || langOther || fws.length || fwOther || plats.length) {
+                output += `## Technical Stack\n\n`;
+                if (langs.length || langOther) output += `**Languages:** ${[...langs, langOther].filter(Boolean).join(', ')}\n\n`;
+                if (fws.length || fwOther) output += `**Frameworks:** ${[...fws, fwOther].filter(Boolean).join(', ')}\n\n`;
+                if (plats.length) output += `**Platforms:** ${plats.join(', ')}\n\n`;
+            }
+
+            // Creative Direction
+            const tones = getChecked('tone');
+            const genres = getChecked('genre');
+
+            if (tones.length || genres.length) {
+                output += `## Creative Direction\n\n`;
+                if (tones.length) output += `**Tone:** ${tones.join(', ')}\n\n`;
+                if (genres.length) output += `**Genre:** ${genres.join(', ')}\n\n`;
+            }
+
+            // Constraints
+            const mustHave = document.getElementById('mustHave').value;
+            const mustNotHave = document.getElementById('mustNotHave').value;
+            const limitations = document.getElementById('limitations').value;
+
+            if (mustHave || mustNotHave || limitations) {
+                output += `## Constraints\n\n`;
+                if (mustHave) output += `**Must Have:**\n${mustHave}\n\n`;
+                if (mustNotHave) output += `**Must NOT Have:**\n${mustNotHave}\n\n`;
+                if (limitations) output += `**Limitations:**\n${limitations}\n\n`;
+            }
+
+            // References
+            const refs = document.getElementById('references').value;
+            const emulate = document.getElementById('emulate').value;
+            const avoid = document.getElementById('avoid').value;
+
+            if (refs || emulate || avoid) {
+                output += `## References\n\n`;
+                if (refs) output += `**References:**\n${refs}\n\n`;
+                if (emulate) output += `**Emulate:**\n${emulate}\n\n`;
+                if (avoid) output += `**Avoid:**\n${avoid}\n\n`;
+            }
+
+            // Priority
+            const timeline = document.querySelector('input[name="timeline"]:checked')?.value;
+            const firstPriority = document.getElementById('firstPriority').value;
+            const additionalContext = document.getElementById('additionalContext').value;
+
+            if (timeline || firstPriority || additionalContext) {
+                output += `## Priority & Context\n\n`;
+                if (timeline) output += `**Timeline:** ${timeline}\n\n`;
+                if (firstPriority) output += `**First Priority:**\n${firstPriority}\n\n`;
+                if (additionalContext) output += `**Additional Context:**\n${additionalContext}\n\n`;
+            }
+
+            output += `---\n\n*Ready for excavation.*`;
+
+            document.getElementById('outputContent').textContent = output;
+            document.getElementById('modalOverlay').classList.add('visible');
+        }
+
+        function getChecked(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return [];
+            return Array.from(container.querySelectorAll('input:checked')).map(cb => cb.value);
+        }
+
+        function copyOutput() {
+            const output = document.getElementById('outputContent').textContent;
+            navigator.clipboard.writeText(output).then(() => {
+                const notice = document.getElementById('copySuccess');
+                notice.classList.add('visible');
+                setTimeout(() => notice.classList.remove('visible'), 2000);
+            });
+        }
+
+        function closeModal(event) {
+            if (!event || event.target === document.getElementById('modalOverlay')) {
+                document.getElementById('modalOverlay').classList.remove('visible');
+            }
+        }
+
+        function clearForm() {
+            if (confirm('Clear all form data?')) {
+                document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+                document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => {
+                    el.checked = false;
+                });
+                document.querySelectorAll('.chip, .radio-card').forEach(el => el.classList.remove('selected'));
+                document.querySelectorAll('.conditional-section').forEach(el => el.classList.remove('visible'));
+                updateProgress();
+            }
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
