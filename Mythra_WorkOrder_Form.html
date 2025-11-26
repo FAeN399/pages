@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mythra Work Order | 10 Critical Areas</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-input: #0d1117;
+            --border: #30363d;
+            --border-focus: #58a6ff;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-gold: #d4a72c;
+            --accent-red: #f85149;
+            --accent-green: #3fb950;
+            --accent-blue: #58a6ff;
+            --accent-purple: #a371f7;
+            --blocking: #f85149;
+            --critical: #d29922;
+            --important: #58a6ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .meta-item strong {
+            color: var(--text-secondary);
+        }
+
+        /* Priority Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-blocking { background: var(--blocking); color: white; }
+        .badge-critical { background: var(--critical); color: black; }
+        .badge-important { background: var(--important); color: white; }
+
+        /* Instructions */
+        .instructions {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructions h2 {
+            font-size: 1rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .instructions ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .instructions li {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .instructions li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+        }
+
+        /* Work Areas */
+        .work-area {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .work-area-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .work-area-header:hover {
+            background: #282e36;
+        }
+
+        .work-area-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .work-area-title h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .work-area-number {
+            width: 28px;
+            height: 28px;
+            background: var(--accent-gold);
+            color: black;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .work-area-content {
+            padding: 1.5rem;
+        }
+
+        .work-area-context {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .work-area-context strong {
+            color: var(--accent-gold);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        label .required {
+            color: var(--accent-red);
+        }
+
+        .label-hint {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        select, input[type="text"], textarea {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* Checkbox Groups */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--border-focus);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Contributor Field */
+        .contributor-field {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .contributor-field label {
+            color: var(--accent-purple);
+        }
+
+        /* Export Section */
+        .export-section {
+            background: var(--bg-secondary);
+            border: 2px solid var(--accent-gold);
+            border-radius: 6px;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .export-section h2 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .export-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: black;
+        }
+
+        .btn-primary:hover {
+            background: #e6b82e;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #2d333b;
+        }
+
+        /* Output Area */
+        .output-area {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .output-area.visible {
+            display: block;
+        }
+
+        .output-area textarea {
+            min-height: 300px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            background: #000;
+            color: var(--accent-green);
+        }
+
+        /* Progress Indicator */
+        .progress-bar {
+            background: var(--bg-tertiary);
+            height: 8px;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-gold), var(--accent-green));
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Collapsible */
+        .collapsed .work-area-content {
+            display: none;
+        }
+
+        .collapse-icon {
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+
+        .collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        /* Status Indicator */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-empty { background: var(--text-muted); }
+        .status-partial { background: var(--accent-gold); }
+        .status-complete { background: var(--accent-green); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mythra Work Order</h1>
+            <p>10 Critical Areas Requiring Input</p>
+            <div class="meta-info">
+                <div class="meta-item">
+                    <strong>Project:</strong> Mythra Campaign Setting
+                </div>
+                <div class="meta-item">
+                    <strong>Target:</strong> Session 1 Ready
+                </div>
+                <div class="meta-item">
+                    <strong>Current Status:</strong> 40% Foundation Complete
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-text"><span id="progressText">0</span>/10 Areas Addressed</div>
+        </header>
+
+        <div class="instructions">
+            <h2>How to Use This Form</h2>
+            <ul>
+                <li>Fill out sections relevant to your expertise</li>
+                <li>Use dropdowns for predefined choices</li>
+                <li>Check boxes for multiple selections</li>
+                <li>Add custom ideas in text fields</li>
+                <li>Click "Extract Data" when complete</li>
+                <li>Return extracted output to Opus</li>
+            </ul>
+        </div>
+
+        <!-- AREA 1: Placeholder Names -->
+        <div class="work-area" id="area1">
+            <div class="work-area-header" onclick="toggleArea('area1')">
+                <div class="work-area-title">
+                    <span class="work-area-number">1</span>
+                    <h3>Placeholder Names & Core Decisions</h3>
+                    <span class="badge badge-blocking">BLOCKING</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> Every document uses placeholder brackets like [HORRORS].
+                    We cannot finalize any content until names are decided. This affects tone, marketing, and player immersion.
+                </div>
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label>[HORRORS] - The Aberrant Gods <span class="required">*</span></label>
+                        <select id="horrors_name" onchange="updateProgress()">
+                            <option value="">-- Select Name --</option>
+                            <option value="The Unmade">The Unmade (nihilistic, undoing)</option>
+                            <option value="The Outer Dark">The Outer Dark (Lovecraftian)</option>
+                            <option value="The Hollows">The Hollows (hunger/emptiness)</option>
+                            <option value="The Vorid">The Vorid (original word)</option>
+                            <option value="custom">Custom Name...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>[HORRORS] Custom Name <span class="label-hint">(if selected above)</span></label>
+                        <input type="text" id="horrors_custom" placeholder="Enter custom name">
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label>[PANTHEON] - The Good Gods <span class="required">*</span></label>
+                        <select id="pantheon_name" onchange="updateProgress()">
+                            <option value="">-- Select Name --</option>
+                            <option value="The Architects">The Architects (builders)</option>
+                            <option value="The Wardens">The Wardens (protectors)</option>
+                            <option value="The First">The First (mythic)</option>
+                            <option value="The Aethel">The Aethel (archaic)</option>
+                            <option value="custom">Custom Name...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>[PANTHEON] Status <span class="required">*</span></label>
+                        <select id="pantheon_status" onchange="updateProgress()">
+                            <option value="">-- Select Status --</option>
+                            <option value="Dead">Dead - Sacrificed, truly gone</option>
+                            <option value="Sleeping">Sleeping - Can be awakened</option>
+                            <option value="Shattered">Shattered - Fragments exist</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label>[CULT] - The Horror Worshippers <span class="required">*</span></label>
+                        <select id="cult_name" onchange="updateProgress()">
+                            <option value="">-- Select Name --</option>
+                            <option value="The Choristers">The Choristers (sing the end)</option>
+                            <option value="The Unbound">The Unbound (seek freedom)</option>
+                            <option value="The Hollow Men">The Hollow Men (emptiness)</option>
+                            <option value="The Seekers of Truth">The Seekers of Truth (ironic)</option>
+                            <option value="custom">Custom Name...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>[WORLD] - The Setting Name <span class="required">*</span></label>
+                        <select id="world_name" onchange="updateProgress()">
+                            <option value="">-- Select Name --</option>
+                            <option value="Aethelgard">Aethelgard (noble enclosure)</option>
+                            <option value="Mythra">Mythra (project name)</option>
+                            <option value="The Last Garden">The Last Garden (descriptive)</option>
+                            <option value="custom">Custom Name...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>[TITLE] - Product Name</label>
+                    <select id="title_name">
+                        <option value="">-- Select Title --</option>
+                        <option value="Mythra: Chronicles of the Last Garden">Mythra: Chronicles of the Last Garden</option>
+                        <option value="Hold the Line">Hold the Line: A Dark Fantasy Campaign</option>
+                        <option value="The Unmade World">The Unmade World: Survival in the Mist</option>
+                        <option value="custom">Custom Title...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional Naming Notes</label>
+                    <textarea id="area1_notes" placeholder="Any thoughts on naming conventions, alternative suggestions, or reasoning..."></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 1)</label>
+                    <input type="text" id="area1_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 2: Starting Town -->
+        <div class="work-area" id="area2">
+            <div class="work-area-header" onclick="toggleArea('area2')">
+                <div class="work-area-title">
+                    <span class="work-area-number">2</span>
+                    <h3>Starting Town Design</h3>
+                    <span class="badge badge-blocking">BLOCKING</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> Session 1 needs a physical location. Players need a tavern to meet in,
+                    a market to buy supplies, NPCs to talk to. Without this, the GM must invent everything.
+                </div>
+
+                <div class="form-group">
+                    <label>Base Location <span class="required">*</span></label>
+                    <select id="starting_town" onchange="updateProgress()">
+                        <option value="">-- Select Starting Location --</option>
+                        <option value="Edge-Watch">Edge-Watch - Fortress city, Warden HQ, grim/martial</option>
+                        <option value="Flotsam">Flotsam - Trade city on bridge, smugglers/refugees</option>
+                        <option value="Sanctum">Sanctum - Capital city, Church seat, decadent</option>
+                        <option value="new">Create New Location...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>If New Location, Describe:</label>
+                    <textarea id="town_custom" placeholder="Name, atmosphere, key features, why it works as a starting point..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Required Locations (check all that should exist)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_tavern" checked>
+                            <label for="loc_tavern">Tavern/Inn</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_temple">
+                            <label for="loc_temple">Temple/Church</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_market">
+                            <label for="loc_market">Market/Shops</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_warden">
+                            <label for="loc_warden">Warden Post/Barracks</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_gate">
+                            <label for="loc_gate">Gate/Walls</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_refugee">
+                            <label for="loc_refugee">Refugee Camp</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_underground">
+                            <label for="loc_underground">Underground/Sewers</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="loc_library">
+                            <label for="loc_library">Library/Archives</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Distance to Boundary</label>
+                    <select id="boundary_distance">
+                        <option value="">-- Select Distance --</option>
+                        <option value="1 day">1 day travel</option>
+                        <option value="2-3 days">2-3 days travel</option>
+                        <option value="1 week">About a week</option>
+                        <option value="visible">Boundary visible from walls</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Town Atmosphere/Mood</label>
+                    <textarea id="town_atmosphere" placeholder="How does it feel? What do people talk about? What's the dominant emotion?"></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 2)</label>
+                    <input type="text" id="area2_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 3: NPCs -->
+        <div class="work-area" id="area3">
+            <div class="work-area-header" onclick="toggleArea('area3')">
+                <div class="work-area-title">
+                    <span class="work-area-number">3</span>
+                    <h3>NPC Roster (Starter Set)</h3>
+                    <span class="badge badge-blocking">BLOCKING</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> Players need people to interact with. Minimum 5 NPCs:
+                    quest giver, authority figure, merchant, information source, and a hidden antagonist.
+                </div>
+
+                <div class="form-group">
+                    <label>NPC 1: Quest Giver / Patron <span class="required">*</span></label>
+                    <textarea id="npc1" onchange="updateProgress()" placeholder="Name, role, appearance, motivation, what they want from the PCs..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>NPC 2: Authority Figure <span class="required">*</span></label>
+                    <textarea id="npc2" onchange="updateProgress()" placeholder="Name, position, personality, how they view the PCs, their problems..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>NPC 3: Merchant / Supplier</label>
+                    <textarea id="npc3" placeholder="Name, what they sell, personality quirks, any secrets..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>NPC 4: Information Source (Survivor/Scholar)</label>
+                    <textarea id="npc4" placeholder="Name, what they know, why they'll share it, what they want in return..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>NPC 5: Hidden [CULT] Agent</label>
+                    <textarea id="npc5" placeholder="Name, cover identity, actual role in cult, how they might be discovered..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional NPCs (optional)</label>
+                    <textarea id="npc_extra" placeholder="Any other characters you think should exist in the starting area..."></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 3)</label>
+                    <input type="text" id="area3_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 4: Session 1 Hook -->
+        <div class="work-area" id="area4">
+            <div class="work-area-header" onclick="toggleArea('area4')">
+                <div class="work-area-title">
+                    <span class="work-area-number">4</span>
+                    <h3>Session 1 Hook</h3>
+                    <span class="badge badge-blocking">BLOCKING</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> What actually happens when the game starts?
+                    What pulls the PCs into the story? This is the inciting incident that launches everything.
+                </div>
+
+                <div class="form-group">
+                    <label>Hook Type <span class="required">*</span></label>
+                    <select id="hook_type" onchange="updateProgress()">
+                        <option value="">-- Select Hook Type --</option>
+                        <option value="missing_patrol">Missing Patrol - Wardens haven't returned</option>
+                        <option value="refugee_plea">Refugee's Plea - Someone needs rescue</option>
+                        <option value="artifact_hunt">Artifact Hunt - Something valuable in the mist</option>
+                        <option value="murder_mystery">Murder Mystery - Someone died strangely</option>
+                        <option value="cult_activity">Cult Activity - Strange happenings point to [CULT]</option>
+                        <option value="boundary_expansion">Boundary Expansion - It's getting closer</option>
+                        <option value="custom">Custom Hook...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Hook Description</label>
+                    <textarea id="hook_description" placeholder="Expand on the hook. What exactly happens? Who approaches the PCs? What's at stake?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>First Encounter Type</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="enc_combat">
+                            <label for="enc_combat">Combat Encounter</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="enc_social">
+                            <label for="enc_social">Social/RP Encounter</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="enc_mystery">
+                            <label for="enc_mystery">Mystery/Investigation</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="enc_exploration">
+                            <label for="enc_exploration">Exploration</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>What Should Session 1 End With?</label>
+                    <textarea id="session1_end" placeholder="What cliffhanger or revelation ends the first session? What makes players want to come back?"></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 4)</label>
+                    <input type="text" id="area4_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 5: Session 0 Guide -->
+        <div class="work-area" id="area5">
+            <div class="work-area-header" onclick="toggleArea('area5')">
+                <div class="work-area-title">
+                    <span class="work-area-number">5</span>
+                    <h3>Session 0 Guide</h3>
+                    <span class="badge badge-blocking">BLOCKING</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> GMs need to introduce the setting to players before character creation.
+                    What's the elevator pitch? What classes fit? What should players know going in?
+                </div>
+
+                <div class="form-group">
+                    <label>Elevator Pitch (2-3 sentences) <span class="required">*</span></label>
+                    <textarea id="elevator_pitch" onchange="updateProgress()" placeholder="How would you describe this setting to players in 30 seconds?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Recommended Classes</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_fighter" checked>
+                            <label for="class_fighter">Fighter</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_cleric" checked>
+                            <label for="class_cleric">Cleric</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_rogue" checked>
+                            <label for="class_rogue">Rogue</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_ranger" checked>
+                            <label for="class_ranger">Ranger</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_paladin">
+                            <label for="class_paladin">Paladin</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_warlock">
+                            <label for="class_warlock">Warlock</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_wizard">
+                            <label for="class_wizard">Wizard</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="class_barbarian">
+                            <label for="class_barbarian">Barbarian</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tone Warnings (what players should expect)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tone_horror" checked>
+                            <label for="tone_horror">Horror Elements</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tone_bodyhorror">
+                            <label for="tone_bodyhorror">Body Horror/Mutation</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tone_death">
+                            <label for="tone_death">Character Death Possible</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tone_hopeless">
+                            <label for="tone_hopeless">Bleak/Hopeless Moments</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tone_moral">
+                            <label for="tone_moral">Moral Ambiguity</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tone_loss">
+                            <label for="tone_loss">Loss/Grief Themes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>What Players Should NOT Expect</label>
+                    <textarea id="not_expect" placeholder="What common fantasy tropes are subverted or absent? What might disappoint certain player types?"></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 5)</label>
+                    <input type="text" id="area5_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 6: Creature Stat Blocks -->
+        <div class="work-area" id="area6">
+            <div class="work-area-header" onclick="toggleArea('area6')">
+                <div class="work-area-title">
+                    <span class="work-area-number">6</span>
+                    <h3>Creature Stat Blocks</h3>
+                    <span class="badge badge-blocking">BLOCKING</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> We have 3 creature concepts but no playable stats.
+                    GMs need CR, HP, AC, attacks, and abilities to run combat encounters.
+                </div>
+
+                <div class="form-group">
+                    <label>Hollow Pilgrim (Tier 1) - Target CR</label>
+                    <select id="hollow_cr">
+                        <option value="">-- Select CR --</option>
+                        <option value="1/4">CR 1/4</option>
+                        <option value="1/2">CR 1/2</option>
+                        <option value="1">CR 1</option>
+                        <option value="2">CR 2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Hollow Pilgrim Special Abilities</label>
+                    <textarea id="hollow_abilities" placeholder="What mechanical abilities should it have? (e.g., deflate on piercing damage, repeat phrases)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Echo-Stalker (Tier 2) - Target CR</label>
+                    <select id="echo_cr">
+                        <option value="">-- Select CR --</option>
+                        <option value="3">CR 3</option>
+                        <option value="4">CR 4</option>
+                        <option value="5">CR 5</option>
+                        <option value="6">CR 6</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Echo-Stalker Special Abilities</label>
+                    <textarea id="echo_abilities" placeholder="What mechanical abilities? (e.g., blindsight via sound, voice mimicry, vulnerability to Silence)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Geometry of Grief (Tier 3) - Target CR</label>
+                    <select id="geometry_cr">
+                        <option value="">-- Select CR --</option>
+                        <option value="8">CR 8</option>
+                        <option value="9">CR 9</option>
+                        <option value="10">CR 10</option>
+                        <option value="11">CR 11</option>
+                        <option value="12">CR 12</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Geometry of Grief Special Abilities</label>
+                    <textarea id="geometry_abilities" placeholder="What mechanical abilities? (e.g., teleport enemies to it, psychic damage, crystallize victims)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional Creature Ideas</label>
+                    <textarea id="creature_ideas" placeholder="Any other creatures that should exist? Brief concepts..."></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 6)</label>
+                    <input type="text" id="area6_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 7: Equipment & Supplies -->
+        <div class="work-area" id="area7">
+            <div class="work-area-header" onclick="toggleArea('area7')">
+                <div class="work-area-title">
+                    <span class="work-area-number">7</span>
+                    <h3>Equipment & Supplies</h3>
+                    <span class="badge badge-critical">CRITICAL</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> The expedition phase requires buying supplies.
+                    Mist-Lanterns are referenced but not defined. Players need a gear list with prices.
+                </div>
+
+                <div class="form-group">
+                    <label>Mist-Lantern Definition <span class="required">*</span></label>
+                    <textarea id="mist_lantern" onchange="updateProgress()" placeholder="What is it? How does it work? What does it cost? How rare is it?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Anti-Corruption Items</label>
+                    <textarea id="anticorrupt_items" placeholder="What items help resist or reduce Exposure? Names, effects, costs..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Standard Expedition Kit (suggested contents)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_rations" checked>
+                            <label for="kit_rations">Rations (3 days)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_rope" checked>
+                            <label for="kit_rope">Rope (50ft)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_torch" checked>
+                            <label for="kit_torch">Torches</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_healer">
+                            <label for="kit_healer">Healer's Kit</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_antitoxin">
+                            <label for="kit_antitoxin">Antitoxin</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_holy">
+                            <label for="kit_holy">Holy Water</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_tether">
+                            <label for="kit_tether">Tether Rope (special)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="kit_compass">
+                            <label for="kit_compass">Compass (unreliable)</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Expedition Kit Total Cost (suggested)</label>
+                    <select id="kit_cost">
+                        <option value="">-- Select Price Range --</option>
+                        <option value="10-25gp">10-25 gp (cheap)</option>
+                        <option value="25-50gp">25-50 gp (moderate)</option>
+                        <option value="50-100gp">50-100 gp (expensive)</option>
+                        <option value="100+gp">100+ gp (premium)</option>
+                    </select>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 7)</label>
+                    <input type="text" id="area7_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 8: Encounter Tables -->
+        <div class="work-area" id="area8">
+            <div class="work-area-header" onclick="toggleArea('area8')">
+                <div class="work-area-title">
+                    <span class="work-area-number">8</span>
+                    <h3>Encounter Tables</h3>
+                    <span class="badge badge-critical">CRITICAL</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> Random encounters are referenced throughout the mechanics.
+                    "Roll for wandering monsters" needs an actual table to roll on.
+                </div>
+
+                <div class="form-group">
+                    <label>Safe Territory Encounters (d6 or d8) <span class="required">*</span></label>
+                    <textarea id="encounters_safe" onchange="updateProgress()" placeholder="List 6-8 encounters for Safe Territory. Include mundane events, rumors, and hidden [CULT] activity..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Boundary Encounters (d8 or d10)</label>
+                    <textarea id="encounters_boundary" placeholder="List encounters for The Boundary. Mist creatures, hazards, lost travelers, reality glitches..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Displacement Table (d6 or d8)</label>
+                    <textarea id="displacement_table" placeholder="Where do lost parties end up when they fail 3 navigation checks? List 6-8 locations with brief descriptions..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Encounter Frequency Preference</label>
+                    <select id="encounter_freq">
+                        <option value="">-- Select Frequency --</option>
+                        <option value="rare">Rare - Check every 4 hours</option>
+                        <option value="moderate">Moderate - Check every 2 hours</option>
+                        <option value="frequent">Frequent - Check every hour</option>
+                        <option value="variable">Variable by zone</option>
+                    </select>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 8)</label>
+                    <input type="text" id="area8_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 9: First Expedition Site -->
+        <div class="work-area" id="area9">
+            <div class="work-area-header" onclick="toggleArea('area9')">
+                <div class="work-area-title">
+                    <span class="work-area-number">9</span>
+                    <h3>First Expedition Site</h3>
+                    <span class="badge badge-critical">CRITICAL</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> The first trip into the Boundary needs a destination.
+                    A ruin, a lost outpost, a place with a clear objective and 3-5 encounter areas.
+                </div>
+
+                <div class="form-group">
+                    <label>Site Type <span class="required">*</span></label>
+                    <select id="site_type" onchange="updateProgress()">
+                        <option value="">-- Select Site Type --</option>
+                        <option value="ruined_outpost">Ruined Warden Outpost</option>
+                        <option value="lost_village">Lost/Swallowed Village</option>
+                        <option value="ancient_ruin">Ancient Pre-Garden Ruin</option>
+                        <option value="cult_hideout">[CULT] Hideout</option>
+                        <option value="natural_cave">Natural Cave System</option>
+                        <option value="temple">Abandoned Temple</option>
+                        <option value="custom">Custom Site...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Site Name & Description</label>
+                    <textarea id="site_description" placeholder="What is this place? What did it used to be? What happened to it?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Expedition Objective</label>
+                    <select id="site_objective">
+                        <option value="">-- Select Objective --</option>
+                        <option value="rescue">Rescue survivors</option>
+                        <option value="artifact">Retrieve artifact/intel</option>
+                        <option value="investigate">Investigate disappearance</option>
+                        <option value="clear">Clear out threat</option>
+                        <option value="scout">Scout and report</option>
+                        <option value="multiple">Multiple objectives</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Key Encounter Areas (3-5)</label>
+                    <textarea id="site_areas" placeholder="List the main areas/rooms. What's in each? What challenges exist?"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>What Complicates the Return?</label>
+                    <textarea id="site_return" placeholder="What makes getting back harder? Pursuit? Time pressure? Changed landscape?"></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 9)</label>
+                    <input type="text" id="area9_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- AREA 10: The Swallowed Village -->
+        <div class="work-area" id="area10">
+            <div class="work-area-header" onclick="toggleArea('area10')">
+                <div class="work-area-title">
+                    <span class="work-area-number">10</span>
+                    <h3>The Swallowed Village</h3>
+                    <span class="badge badge-important">IMPORTANT</span>
+                </div>
+                <span class="collapse-icon">▼</span>
+            </div>
+            <div class="work-area-content">
+                <div class="work-area-context">
+                    <strong>Why this matters:</strong> Act I references "a village swallowed by the Boundary" as an inciting disaster.
+                    This needs to be a real place with a name, history, and consequences.
+                </div>
+
+                <div class="form-group">
+                    <label>Village Name <span class="required">*</span></label>
+                    <input type="text" id="village_name" onchange="updateProgress()" placeholder="What was this village called?">
+                </div>
+
+                <div class="form-group">
+                    <label>Former Population</label>
+                    <select id="village_pop">
+                        <option value="">-- Select Size --</option>
+                        <option value="small">Small (50-100 people)</option>
+                        <option value="medium">Medium (100-300 people)</option>
+                        <option value="large">Large (300-500 people)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>What Was Lost?</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lost_people">
+                            <label for="lost_people">Important NPCs</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lost_artifact">
+                            <label for="lost_artifact">Valuable Artifact</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lost_intel">
+                            <label for="lost_intel">Critical Information</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lost_holy">
+                            <label for="lost_holy">Holy Site/Relic</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lost_family">
+                            <label for="lost_family">PC's Family/Contacts</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="lost_supplies">
+                            <label for="lost_supplies">Critical Supplies</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Current State</label>
+                    <select id="village_state">
+                        <option value="">-- Select State --</option>
+                        <option value="fresh">Freshly swallowed (days ago)</option>
+                        <option value="weeks">Weeks in the mist</option>
+                        <option value="months">Months gone</option>
+                        <option value="unknown">Unknown/variable</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Why Does It Matter to the PCs?</label>
+                    <textarea id="village_motivation" placeholder="What personal connection or mission ties the PCs to this village?"></textarea>
+                </div>
+
+                <div class="contributor-field">
+                    <label>Contributor Name (Area 10)</label>
+                    <input type="text" id="area10_contributor" placeholder="Who filled this out?">
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <h2>Extract & Submit</h2>
+            <p>When you've filled out the relevant sections, click below to generate the output data.</p>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="extractData()">Extract Data</button>
+                <button class="btn btn-secondary" onclick="copyToClipboard()">Copy to Clipboard</button>
+                <button class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+            </div>
+
+            <div class="output-area" id="outputArea">
+                <label style="margin-top: 1rem;">Generated Output (copy and return to Opus):</label>
+                <textarea id="outputText" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleArea(areaId) {
+            const area = document.getElementById(areaId);
+            area.classList.toggle('collapsed');
+        }
+
+        function updateProgress() {
+            const requiredFields = [
+                'horrors_name', 'pantheon_name', 'pantheon_status', 'cult_name', 'world_name',
+                'starting_town', 'npc1', 'npc2', 'hook_type', 'elevator_pitch',
+                'mist_lantern', 'encounters_safe', 'site_type', 'village_name'
+            ];
+
+            let filled = 0;
+            const areas = new Set();
+
+            requiredFields.forEach(field => {
+                const el = document.getElementById(field);
+                if (el && el.value && el.value.trim() !== '') {
+                    filled++;
+                    // Map field to area
+                    if (['horrors_name', 'pantheon_name', 'pantheon_status', 'cult_name', 'world_name'].includes(field)) areas.add(1);
+                    if (field === 'starting_town') areas.add(2);
+                    if (['npc1', 'npc2'].includes(field)) areas.add(3);
+                    if (field === 'hook_type') areas.add(4);
+                    if (field === 'elevator_pitch') areas.add(5);
+                    if (field === 'mist_lantern') areas.add(7);
+                    if (field === 'encounters_safe') areas.add(8);
+                    if (field === 'site_type') areas.add(9);
+                    if (field === 'village_name') areas.add(10);
+                }
+            });
+
+            // Stat blocks area 6 - check if any CR selected
+            if (document.getElementById('hollow_cr').value ||
+                document.getElementById('echo_cr').value ||
+                document.getElementById('geometry_cr').value) {
+                areas.add(6);
+            }
+
+            const percentage = Math.round((areas.size / 10) * 100);
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = areas.size;
+        }
+
+        function getCheckedValues(prefix, items) {
+            const checked = [];
+            items.forEach(item => {
+                const el = document.getElementById(prefix + item);
+                if (el && el.checked) checked.push(item);
+            });
+            return checked;
+        }
+
+        function extractData() {
+            const data = {
+                meta: {
+                    form: "Mythra Work Order",
+                    extracted: new Date().toISOString(),
+                    version: "1.0"
+                },
+                area1_placeholders: {
+                    horrors: document.getElementById('horrors_name').value === 'custom'
+                        ? document.getElementById('horrors_custom').value
+                        : document.getElementById('horrors_name').value,
+                    pantheon_name: document.getElementById('pantheon_name').value,
+                    pantheon_status: document.getElementById('pantheon_status').value,
+                    cult: document.getElementById('cult_name').value,
+                    world: document.getElementById('world_name').value,
+                    title: document.getElementById('title_name').value,
+                    notes: document.getElementById('area1_notes').value,
+                    contributor: document.getElementById('area1_contributor').value
+                },
+                area2_starting_town: {
+                    location: document.getElementById('starting_town').value,
+                    custom_description: document.getElementById('town_custom').value,
+                    locations_included: getCheckedValues('loc_', ['tavern', 'temple', 'market', 'warden', 'gate', 'refugee', 'underground', 'library']),
+                    boundary_distance: document.getElementById('boundary_distance').value,
+                    atmosphere: document.getElementById('town_atmosphere').value,
+                    contributor: document.getElementById('area2_contributor').value
+                },
+                area3_npcs: {
+                    quest_giver: document.getElementById('npc1').value,
+                    authority: document.getElementById('npc2').value,
+                    merchant: document.getElementById('npc3').value,
+                    information: document.getElementById('npc4').value,
+                    cult_agent: document.getElementById('npc5').value,
+                    additional: document.getElementById('npc_extra').value,
+                    contributor: document.getElementById('area3_contributor').value
+                },
+                area4_session1_hook: {
+                    hook_type: document.getElementById('hook_type').value,
+                    description: document.getElementById('hook_description').value,
+                    encounter_types: getCheckedValues('enc_', ['combat', 'social', 'mystery', 'exploration']),
+                    session_end: document.getElementById('session1_end').value,
+                    contributor: document.getElementById('area4_contributor').value
+                },
+                area5_session0: {
+                    elevator_pitch: document.getElementById('elevator_pitch').value,
+                    recommended_classes: getCheckedValues('class_', ['fighter', 'cleric', 'rogue', 'ranger', 'paladin', 'warlock', 'wizard', 'barbarian']),
+                    tone_warnings: getCheckedValues('tone_', ['horror', 'bodyhorror', 'death', 'hopeless', 'moral', 'loss']),
+                    not_expect: document.getElementById('not_expect').value,
+                    contributor: document.getElementById('area5_contributor').value
+                },
+                area6_creatures: {
+                    hollow_pilgrim: {
+                        cr: document.getElementById('hollow_cr').value,
+                        abilities: document.getElementById('hollow_abilities').value
+                    },
+                    echo_stalker: {
+                        cr: document.getElementById('echo_cr').value,
+                        abilities: document.getElementById('echo_abilities').value
+                    },
+                    geometry_of_grief: {
+                        cr: document.getElementById('geometry_cr').value,
+                        abilities: document.getElementById('geometry_abilities').value
+                    },
+                    additional_ideas: document.getElementById('creature_ideas').value,
+                    contributor: document.getElementById('area6_contributor').value
+                },
+                area7_equipment: {
+                    mist_lantern: document.getElementById('mist_lantern').value,
+                    anti_corruption: document.getElementById('anticorrupt_items').value,
+                    kit_contents: getCheckedValues('kit_', ['rations', 'rope', 'torch', 'healer', 'antitoxin', 'holy', 'tether', 'compass']),
+                    kit_cost: document.getElementById('kit_cost').value,
+                    contributor: document.getElementById('area7_contributor').value
+                },
+                area8_encounters: {
+                    safe_territory: document.getElementById('encounters_safe').value,
+                    boundary: document.getElementById('encounters_boundary').value,
+                    displacement: document.getElementById('displacement_table').value,
+                    frequency: document.getElementById('encounter_freq').value,
+                    contributor: document.getElementById('area8_contributor').value
+                },
+                area9_expedition_site: {
+                    type: document.getElementById('site_type').value,
+                    description: document.getElementById('site_description').value,
+                    objective: document.getElementById('site_objective').value,
+                    areas: document.getElementById('site_areas').value,
+                    return_complication: document.getElementById('site_return').value,
+                    contributor: document.getElementById('area9_contributor').value
+                },
+                area10_swallowed_village: {
+                    name: document.getElementById('village_name').value,
+                    population: document.getElementById('village_pop').value,
+                    lost_items: getCheckedValues('lost_', ['people', 'artifact', 'intel', 'holy', 'family', 'supplies']),
+                    current_state: document.getElementById('village_state').value,
+                    motivation: document.getElementById('village_motivation').value,
+                    contributor: document.getElementById('area10_contributor').value
+                }
+            };
+
+            // Generate readable output
+            let output = "# MYTHRA WORK ORDER RESPONSE\n";
+            output += "# Extracted: " + data.meta.extracted + "\n";
+            output += "# =========================================\n\n";
+
+            // Area 1
+            output += "## AREA 1: PLACEHOLDER DECISIONS\n";
+            output += "- [HORRORS]: " + (data.area1_placeholders.horrors || "NOT SELECTED") + "\n";
+            output += "- [PANTHEON] Name: " + (data.area1_placeholders.pantheon_name || "NOT SELECTED") + "\n";
+            output += "- [PANTHEON] Status: " + (data.area1_placeholders.pantheon_status || "NOT SELECTED") + "\n";
+            output += "- [CULT]: " + (data.area1_placeholders.cult || "NOT SELECTED") + "\n";
+            output += "- [WORLD]: " + (data.area1_placeholders.world || "NOT SELECTED") + "\n";
+            output += "- [TITLE]: " + (data.area1_placeholders.title || "NOT SELECTED") + "\n";
+            if (data.area1_placeholders.notes) output += "- Notes: " + data.area1_placeholders.notes + "\n";
+            if (data.area1_placeholders.contributor) output += "- Contributor: " + data.area1_placeholders.contributor + "\n";
+            output += "\n";
+
+            // Area 2
+            output += "## AREA 2: STARTING TOWN\n";
+            output += "- Location: " + (data.area2_starting_town.location || "NOT SELECTED") + "\n";
+            if (data.area2_starting_town.custom_description) output += "- Custom: " + data.area2_starting_town.custom_description + "\n";
+            output += "- Included Locations: " + (data.area2_starting_town.locations_included.join(", ") || "NONE") + "\n";
+            output += "- Boundary Distance: " + (data.area2_starting_town.boundary_distance || "NOT SET") + "\n";
+            if (data.area2_starting_town.atmosphere) output += "- Atmosphere: " + data.area2_starting_town.atmosphere + "\n";
+            if (data.area2_starting_town.contributor) output += "- Contributor: " + data.area2_starting_town.contributor + "\n";
+            output += "\n";
+
+            // Area 3
+            output += "## AREA 3: NPCs\n";
+            output += "### Quest Giver:\n" + (data.area3_npcs.quest_giver || "NOT PROVIDED") + "\n\n";
+            output += "### Authority Figure:\n" + (data.area3_npcs.authority || "NOT PROVIDED") + "\n\n";
+            output += "### Merchant:\n" + (data.area3_npcs.merchant || "NOT PROVIDED") + "\n\n";
+            output += "### Information Source:\n" + (data.area3_npcs.information || "NOT PROVIDED") + "\n\n";
+            output += "### Hidden Cult Agent:\n" + (data.area3_npcs.cult_agent || "NOT PROVIDED") + "\n\n";
+            if (data.area3_npcs.additional) output += "### Additional NPCs:\n" + data.area3_npcs.additional + "\n\n";
+            if (data.area3_npcs.contributor) output += "- Contributor: " + data.area3_npcs.contributor + "\n";
+            output += "\n";
+
+            // Area 4
+            output += "## AREA 4: SESSION 1 HOOK\n";
+            output += "- Hook Type: " + (data.area4_session1_hook.hook_type || "NOT SELECTED") + "\n";
+            if (data.area4_session1_hook.description) output += "- Description: " + data.area4_session1_hook.description + "\n";
+            output += "- Encounter Types: " + (data.area4_session1_hook.encounter_types.join(", ") || "NONE") + "\n";
+            if (data.area4_session1_hook.session_end) output += "- Session End: " + data.area4_session1_hook.session_end + "\n";
+            if (data.area4_session1_hook.contributor) output += "- Contributor: " + data.area4_session1_hook.contributor + "\n";
+            output += "\n";
+
+            // Area 5
+            output += "## AREA 5: SESSION 0 GUIDE\n";
+            output += "### Elevator Pitch:\n" + (data.area5_session0.elevator_pitch || "NOT PROVIDED") + "\n\n";
+            output += "- Recommended Classes: " + (data.area5_session0.recommended_classes.join(", ") || "NONE") + "\n";
+            output += "- Tone Warnings: " + (data.area5_session0.tone_warnings.join(", ") || "NONE") + "\n";
+            if (data.area5_session0.not_expect) output += "- NOT to Expect: " + data.area5_session0.not_expect + "\n";
+            if (data.area5_session0.contributor) output += "- Contributor: " + data.area5_session0.contributor + "\n";
+            output += "\n";
+
+            // Area 6
+            output += "## AREA 6: CREATURE STAT BLOCKS\n";
+            output += "### Hollow Pilgrim\n";
+            output += "- Target CR: " + (data.area6_creatures.hollow_pilgrim.cr || "NOT SET") + "\n";
+            if (data.area6_creatures.hollow_pilgrim.abilities) output += "- Abilities: " + data.area6_creatures.hollow_pilgrim.abilities + "\n";
+            output += "\n### Echo-Stalker\n";
+            output += "- Target CR: " + (data.area6_creatures.echo_stalker.cr || "NOT SET") + "\n";
+            if (data.area6_creatures.echo_stalker.abilities) output += "- Abilities: " + data.area6_creatures.echo_stalker.abilities + "\n";
+            output += "\n### Geometry of Grief\n";
+            output += "- Target CR: " + (data.area6_creatures.geometry_of_grief.cr || "NOT SET") + "\n";
+            if (data.area6_creatures.geometry_of_grief.abilities) output += "- Abilities: " + data.area6_creatures.geometry_of_grief.abilities + "\n";
+            if (data.area6_creatures.additional_ideas) output += "\n### Additional Creature Ideas:\n" + data.area6_creatures.additional_ideas + "\n";
+            if (data.area6_creatures.contributor) output += "- Contributor: " + data.area6_creatures.contributor + "\n";
+            output += "\n";
+
+            // Area 7
+            output += "## AREA 7: EQUIPMENT & SUPPLIES\n";
+            output += "### Mist-Lantern Definition:\n" + (data.area7_equipment.mist_lantern || "NOT PROVIDED") + "\n\n";
+            if (data.area7_equipment.anti_corruption) output += "### Anti-Corruption Items:\n" + data.area7_equipment.anti_corruption + "\n\n";
+            output += "- Kit Contents: " + (data.area7_equipment.kit_contents.join(", ") || "NONE") + "\n";
+            output += "- Kit Cost: " + (data.area7_equipment.kit_cost || "NOT SET") + "\n";
+            if (data.area7_equipment.contributor) output += "- Contributor: " + data.area7_equipment.contributor + "\n";
+            output += "\n";
+
+            // Area 8
+            output += "## AREA 8: ENCOUNTER TABLES\n";
+            output += "### Safe Territory Encounters:\n" + (data.area8_encounters.safe_territory || "NOT PROVIDED") + "\n\n";
+            output += "### Boundary Encounters:\n" + (data.area8_encounters.boundary || "NOT PROVIDED") + "\n\n";
+            output += "### Displacement Table:\n" + (data.area8_encounters.displacement || "NOT PROVIDED") + "\n\n";
+            output += "- Encounter Frequency: " + (data.area8_encounters.frequency || "NOT SET") + "\n";
+            if (data.area8_encounters.contributor) output += "- Contributor: " + data.area8_encounters.contributor + "\n";
+            output += "\n";
+
+            // Area 9
+            output += "## AREA 9: FIRST EXPEDITION SITE\n";
+            output += "- Site Type: " + (data.area9_expedition_site.type || "NOT SELECTED") + "\n";
+            if (data.area9_expedition_site.description) output += "- Description: " + data.area9_expedition_site.description + "\n";
+            output += "- Objective: " + (data.area9_expedition_site.objective || "NOT SET") + "\n";
+            if (data.area9_expedition_site.areas) output += "### Key Areas:\n" + data.area9_expedition_site.areas + "\n\n";
+            if (data.area9_expedition_site.return_complication) output += "- Return Complication: " + data.area9_expedition_site.return_complication + "\n";
+            if (data.area9_expedition_site.contributor) output += "- Contributor: " + data.area9_expedition_site.contributor + "\n";
+            output += "\n";
+
+            // Area 10
+            output += "## AREA 10: SWALLOWED VILLAGE\n";
+            output += "- Village Name: " + (data.area10_swallowed_village.name || "NOT PROVIDED") + "\n";
+            output += "- Population: " + (data.area10_swallowed_village.population || "NOT SET") + "\n";
+            output += "- What Was Lost: " + (data.area10_swallowed_village.lost_items.join(", ") || "NONE SELECTED") + "\n";
+            output += "- Current State: " + (data.area10_swallowed_village.current_state || "NOT SET") + "\n";
+            if (data.area10_swallowed_village.motivation) output += "- PC Motivation: " + data.area10_swallowed_village.motivation + "\n";
+            if (data.area10_swallowed_village.contributor) output += "- Contributor: " + data.area10_swallowed_village.contributor + "\n";
+            output += "\n";
+
+            output += "# =========================================\n";
+            output += "# END OF WORK ORDER RESPONSE\n";
+            output += "# Return this output to Opus for processing\n";
+
+            document.getElementById('outputText').value = output;
+            document.getElementById('outputArea').classList.add('visible');
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('outputText');
+            output.select();
+            document.execCommand('copy');
+            alert('Output copied to clipboard!');
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all form data?')) {
+                document.querySelectorAll('input, select, textarea').forEach(el => {
+                    if (el.type === 'checkbox') {
+                        el.checked = el.id.includes('loc_tavern') ||
+                                    el.id.includes('kit_rations') ||
+                                    el.id.includes('kit_rope') ||
+                                    el.id.includes('kit_torch') ||
+                                    el.id.includes('class_fighter') ||
+                                    el.id.includes('class_cleric') ||
+                                    el.id.includes('class_rogue') ||
+                                    el.id.includes('class_ranger') ||
+                                    el.id.includes('tone_horror');
+                    } else {
+                        el.value = '';
+                    }
+                });
+                document.getElementById('outputArea').classList.remove('visible');
+                updateProgress();
+            }
+        }
+
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
