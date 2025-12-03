@@ -275,6 +275,12 @@
             margin-top: 5px;
         }
 
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -349,9 +355,218 @@
             margin: 20px 0;
         }
 
+        /* Mobile Responsive Styles */
         @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 40px 15px;
+                margin-bottom: 25px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                letter-spacing: 2px;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+                margin: 30px 0 15px;
+            }
+
+            .vision-box {
+                padding: 20px;
+                gap: 15px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .vision-item {
+                padding: 10px;
+            }
+
+            .vision-item h3 {
+                font-size: 0.75rem;
+                letter-spacing: 1px;
+            }
+
+            .vision-item p {
+                font-size: 0.95rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .species-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .species-card {
+                padding: 20px;
+            }
+
+            .species-card:hover {
+                transform: none;
+            }
+
+            .gen-timeline {
+                flex-direction: column;
+                gap: 20px;
+                padding: 25px 20px;
+            }
+
+            .gen-timeline::before {
+                display: none;
+            }
+
+            .gen-item {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 15px;
+                border-left: 3px solid var(--accent-primary);
+            }
+
+            .gen-item .num {
+                font-size: 1.5rem;
+                min-width: 50px;
+            }
+
+            .gen-item .desc {
+                text-align: left;
+                margin-top: 0;
+            }
+
+            /* Table responsive */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 500px;
+            }
+
+            th, td {
+                padding: 12px 10px;
+                font-size: 0.9rem;
+            }
+
+            .controls-section {
+                padding: 20px;
+            }
+
+            .control-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 15px 0;
+            }
+
+            .control-key {
+                min-width: auto;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .control-desc {
+                margin-left: 0;
+                font-size: 0.95rem;
+            }
+
             .priority-section {
                 grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .priority-box {
+                padding: 20px;
+            }
+
+            .tbd-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                padding: 30px 15px;
+                margin-top: 40px;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 1.5rem;
+                letter-spacing: 1px;
+            }
+
+            .tagline {
+                font-size: 0.9rem;
+            }
+
+            h2 {
+                font-size: 1.15rem;
+            }
+
+            .vision-box {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+
+            .vision-item h3 {
+                font-size: 0.7rem;
+            }
+
+            .card h3 {
+                font-size: 1.1rem;
+            }
+
+            .species-card h3 {
+                font-size: 1.15rem;
+            }
+
+            .stat-bar span {
+                width: 45px;
+                font-size: 0.8rem;
+            }
+
+            .gen-item .num {
+                font-size: 1.3rem;
+            }
+
+            .gen-item .desc {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) {
+            .card:hover,
+            .species-card:hover {
+                transform: none;
+                background: var(--bg-card);
+                border-color: var(--border-color);
+            }
+
+            .card:active {
+                background: var(--bg-card-hover);
+            }
+
+            .species-card:active {
+                background: var(--bg-card-hover);
             }
         }
 
@@ -606,37 +821,39 @@
         </div>
 
         <h2>Stats & Growth</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Stat</th>
-                    <th>Affects</th>
-                    <th>Grows By</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>STR</strong></td>
-                    <td>HP, Power, Max Energy</td>
-                    <td>Attacking</td>
-                </tr>
-                <tr>
-                    <td><strong>INT</strong></td>
-                    <td>Special Power, Command Obedience, Move Learning</td>
-                    <td>Using abilities</td>
-                </tr>
-                <tr>
-                    <td><strong>AGI</strong></td>
-                    <td>Movement Speed, Reaction Time</td>
-                    <td>Moving around</td>
-                </tr>
-                <tr>
-                    <td><strong>END</strong></td>
-                    <td>HP, Energy Replenishment Rate</td>
-                    <td>Taking hits</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stat</th>
+                        <th>Affects</th>
+                        <th>Grows By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>STR</strong></td>
+                        <td>HP, Power, Max Energy</td>
+                        <td>Attacking</td>
+                    </tr>
+                    <tr>
+                        <td><strong>INT</strong></td>
+                        <td>Special Power, Command Obedience, Move Learning</td>
+                        <td>Using abilities</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AGI</strong></td>
+                        <td>Movement Speed, Reaction Time</td>
+                        <td>Moving around</td>
+                    </tr>
+                    <tr>
+                        <td><strong>END</strong></td>
+                        <td>HP, Energy Replenishment Rate</td>
+                        <td>Taking hits</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div class="card-grid">
             <div class="card">
                 <h3>Birthmarks</h3>
