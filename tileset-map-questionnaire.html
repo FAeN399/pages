@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tileset & Map Creation Questionnaire</title>
+    <title>Tileset & Map Creation - Requirements & Tool Evaluation</title>
     <style>
         :root {
             --bg-primary: #0d1117;
@@ -18,6 +18,7 @@
             --warning: #d29922;
             --purple: #a371f7;
             --pink: #db61a2;
+            --cyan: #39c5cf;
         }
 
         * {
@@ -42,8 +43,8 @@
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--border);
         }
 
@@ -59,6 +60,51 @@
         .subtitle {
             color: var(--text-secondary);
             font-size: 1.1rem;
+        }
+
+        .purpose-box {
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(163, 113, 247, 0.1));
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .purpose-box h2 {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .purpose-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .purpose-box .flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            background: var(--bg-tertiary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .flow-arrow {
+            color: var(--accent);
+            font-weight: bold;
         }
 
         .progress-container {
@@ -244,12 +290,6 @@
             gap: 1rem;
         }
 
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 0.75rem;
-        }
-
         .actions {
             display: flex;
             gap: 1rem;
@@ -312,8 +352,8 @@
         }
 
         .info-box {
-            background: rgba(88, 166, 255, 0.1);
-            border: 1px solid rgba(88, 166, 255, 0.3);
+            background: rgba(57, 197, 207, 0.1);
+            border: 1px solid rgba(57, 197, 207, 0.3);
             border-radius: 8px;
             padding: 1rem;
             margin-top: 1rem;
@@ -321,13 +361,7 @@
         }
 
         .info-box strong {
-            color: var(--accent);
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 1.5rem 0;
+            color: var(--cyan);
         }
 
         footer {
@@ -361,6 +395,14 @@
                 width: 100%;
                 justify-content: center;
             }
+
+            .flow {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
         }
     </style>
 </head>
@@ -368,8 +410,22 @@
     <div class="container">
         <header>
             <h1>Tileset & Map Creation</h1>
-            <p class="subtitle">Help define your project's visual foundation</p>
+            <p class="subtitle">Define requirements → Generate evaluation criteria → Test tools</p>
         </header>
+
+        <div class="purpose-box">
+            <h2>🎯 What This Form Does</h2>
+            <p>Before you can evaluate tools (Crocotile, Tiled, etc.), you need to know <strong>what you're evaluating them against</strong>. This form captures your requirements and generates a checklist for testing.</p>
+            <div class="flow">
+                <span class="flow-step">Fill out requirements</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Get evaluation checklist</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Test tools against it</span>
+                <span class="flow-arrow">→</span>
+                <span class="flow-step">Make informed decision</span>
+            </div>
+        </div>
 
         <div class="progress-container">
             <div class="progress-bar">
@@ -391,38 +447,35 @@
             <div class="section-content">
                 <div class="question-group">
                     <label for="projectName">Project Name</label>
-                    <input type="text" id="projectName" placeholder="e.g., Dark Fantasy Dungeon Crawler" data-question>
+                    <input type="text" id="projectName" placeholder="e.g., Monster Battler, Dark Fantasy RPG" data-question>
                 </div>
 
                 <div class="question-group">
-                    <label for="projectType">Project Type</label>
-                    <p class="hint">What engine or format are you targeting?</p>
+                    <label for="projectType">Target Engine</label>
+                    <p class="hint">What will these tilesets be used in?</p>
                     <div class="radio-group" data-question data-name="projectType">
                         <label class="radio-item"><input type="radio" name="projectType" value="rmmz"> RPG Maker MZ</label>
                         <label class="radio-item"><input type="radio" name="projectType" value="rmmv"> RPG Maker MV</label>
                         <label class="radio-item"><input type="radio" name="projectType" value="godot"> Godot</label>
                         <label class="radio-item"><input type="radio" name="projectType" value="unity"> Unity</label>
-                        <label class="radio-item"><input type="radio" name="projectType" value="tiled"> Tiled (Generic)</label>
-                        <label class="radio-item"><input type="radio" name="projectType" value="foundry"> Foundry VTT</label>
+                        <label class="radio-item"><input type="radio" name="projectType" value="gamemaker"> GameMaker</label>
                         <label class="radio-item"><input type="radio" name="projectType" value="other"> Other</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label for="projectGoal">Primary Goal</label>
-                    <p class="hint">What's the main purpose of these maps?</p>
-                    <div class="checkbox-group" data-question data-name="projectGoal">
-                        <label class="checkbox-item"><input type="checkbox" name="projectGoal" value="game"> Game Development</label>
-                        <label class="checkbox-item"><input type="checkbox" name="projectGoal" value="ttrpg"> Tabletop RPG</label>
-                        <label class="checkbox-item"><input type="checkbox" name="projectGoal" value="prototype"> Prototyping</label>
-                        <label class="checkbox-item"><input type="checkbox" name="projectGoal" value="learning"> Learning/Practice</label>
-                        <label class="checkbox-item"><input type="checkbox" name="projectGoal" value="assets"> Asset Creation</label>
+                    <label>Team Size</label>
+                    <div class="radio-group" data-question data-name="teamSize">
+                        <label class="radio-item"><input type="radio" name="teamSize" value="solo"> Solo</label>
+                        <label class="radio-item"><input type="radio" name="teamSize" value="small"> Small (2-4)</label>
+                        <label class="radio-item"><input type="radio" name="teamSize" value="medium"> Medium (5-10)</label>
+                        <label class="radio-item"><input type="radio" name="teamSize" value="large"> Large (10+)</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label for="projectScope">Project Scope</label>
-                    <textarea id="projectScope" placeholder="Briefly describe your project and what you're trying to achieve..." data-question></textarea>
+                    <label for="projectScope">Project Description</label>
+                    <textarea id="projectScope" placeholder="What kind of game? What's the scope? Any specific map/tileset needs?" data-question></textarea>
                 </div>
             </div>
         </div>
@@ -434,19 +487,19 @@
                     <span class="section-icon">🧱</span>
                     <span>Tileset Requirements</span>
                 </div>
-                <span class="section-badge" data-badge="tileset">0/6</span>
+                <span class="section-badge" data-badge="tileset">0/5</span>
                 <span class="chevron">▼</span>
             </div>
             <div class="section-content">
                 <div class="question-group">
                     <label>Tile Size</label>
-                    <p class="hint">What pixel dimensions for your tiles?</p>
+                    <p class="hint">What pixel dimensions?</p>
                     <div class="radio-group" data-question data-name="tileSize">
-                        <label class="radio-item"><input type="radio" name="tileSize" value="16x16"> 16x16</label>
-                        <label class="radio-item"><input type="radio" name="tileSize" value="32x32"> 32x32</label>
-                        <label class="radio-item"><input type="radio" name="tileSize" value="48x48"> 48x48 (RMMZ)</label>
-                        <label class="radio-item"><input type="radio" name="tileSize" value="64x64"> 64x64</label>
-                        <label class="radio-item"><input type="radio" name="tileSize" value="custom"> Custom</label>
+                        <label class="radio-item"><input type="radio" name="tileSize" value="16"> 16x16</label>
+                        <label class="radio-item"><input type="radio" name="tileSize" value="32"> 32x32</label>
+                        <label class="radio-item"><input type="radio" name="tileSize" value="48"> 48x48 (RMMZ)</label>
+                        <label class="radio-item"><input type="radio" name="tileSize" value="64"> 64x64</label>
+                        <label class="radio-item"><input type="radio" name="tileSize" value="custom"> Custom/Flexible</label>
                     </div>
                 </div>
 
@@ -454,33 +507,19 @@
                     <label>Art Style</label>
                     <div class="checkbox-group" data-question data-name="artStyle">
                         <label class="checkbox-item"><input type="checkbox" name="artStyle" value="pixel-retro"> Pixel Art (Retro)</label>
-                        <label class="checkbox-item"><input type="checkbox" name="artStyle" value="pixel-modern"> Pixel Art (Modern HD)</label>
+                        <label class="checkbox-item"><input type="checkbox" name="artStyle" value="pixel-modern"> Pixel Art (Modern/HD)</label>
                         <label class="checkbox-item"><input type="checkbox" name="artStyle" value="painted"> Hand-Painted</label>
+                        <label class="checkbox-item"><input type="checkbox" name="artStyle" value="3d-rendered"> 3D Pre-rendered</label>
                         <label class="checkbox-item"><input type="checkbox" name="artStyle" value="vector"> Vector/Clean</label>
-                        <label class="checkbox-item"><input type="checkbox" name="artStyle" value="realistic"> Semi-Realistic</label>
-                        <label class="checkbox-item"><input type="checkbox" name="artStyle" value="anime"> Anime/JRPG</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label>Tileset Types Needed</label>
-                    <p class="hint">Select all that apply to your project</p>
-                    <div class="checkbox-group" data-question data-name="tilesetTypes">
-                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="a1-water"> A1: Water/Animation</label>
-                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="a2-ground"> A2: Ground/Terrain</label>
-                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="a3-building"> A3: Building Exteriors</label>
-                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="a4-dungeon"> A4: Walls/Dungeons</label>
-                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="a5-static"> A5: Static Tiles</label>
-                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="b-objects"> B-E: Objects/Decor</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>Autotile Requirements</label>
-                    <p class="hint">How important is autotile functionality?</p>
+                    <label>Autotile Needs</label>
+                    <p class="hint">How important is automatic tile edge matching?</p>
                     <div class="radio-group" data-question data-name="autotileReq">
-                        <label class="radio-item"><input type="radio" name="autotileReq" value="essential"> Essential - Full 47-tile blob</label>
-                        <label class="radio-item"><input type="radio" name="autotileReq" value="basic"> Basic - 16-tile walls only</label>
+                        <label class="radio-item"><input type="radio" name="autotileReq" value="essential"> Essential - Need full 47-tile blob pattern</label>
+                        <label class="radio-item"><input type="radio" name="autotileReq" value="basic"> Basic - 16-tile walls is enough</label>
                         <label class="radio-item"><input type="radio" name="autotileReq" value="minimal"> Minimal - Manual placement OK</label>
                         <label class="radio-item"><input type="radio" name="autotileReq" value="none"> Not needed</label>
                     </div>
@@ -489,17 +528,24 @@
                 <div class="question-group">
                     <label>Animation Needs</label>
                     <div class="checkbox-group" data-question data-name="animationNeeds">
-                        <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="water"> Water (3-frame)</label>
+                        <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="water"> Animated Water</label>
                         <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="waterfall"> Waterfalls</label>
                         <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="lava"> Lava/Fire</label>
-                        <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="foliage"> Swaying Foliage</label>
-                        <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="none"> No animation needed</label>
+                        <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="foliage"> Foliage/Wind</label>
+                        <label class="checkbox-item"><input type="checkbox" name="animationNeeds" value="none"> None needed</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label for="tilesetNotes">Additional Tileset Notes</label>
-                    <textarea id="tilesetNotes" placeholder="Any specific tileset requirements, references, or constraints..." data-question></textarea>
+                    <label>Tileset Categories Needed</label>
+                    <p class="hint">What environments do you need?</p>
+                    <div class="checkbox-group" data-question data-name="tilesetTypes">
+                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="exterior-nature"> Exterior - Nature/Terrain</label>
+                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="exterior-town"> Exterior - Towns/Buildings</label>
+                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="interior"> Interior - Houses/Shops</label>
+                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="dungeon"> Dungeons/Caves</label>
+                        <label class="checkbox-item"><input type="checkbox" name="tilesetTypes" value="special"> Special/Unique Areas</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -509,253 +555,182 @@
             <div class="section-header" onclick="toggleSection(this)">
                 <div class="section-title">
                     <span class="section-icon">🗺️</span>
-                    <span>Map Specifications</span>
+                    <span>Map Requirements</span>
                 </div>
-                <span class="section-badge" data-badge="maps">0/6</span>
+                <span class="section-badge" data-badge="maps">0/4</span>
                 <span class="chevron">▼</span>
             </div>
             <div class="section-content">
                 <div class="question-group">
                     <label>Map Types Needed</label>
                     <div class="checkbox-group" data-question data-name="mapTypes">
-                        <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="overworld"> Overworld</label>
+                        <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="overworld"> Overworld/World Map</label>
                         <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="dungeon"> Dungeons</label>
                         <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="town"> Towns/Villages</label>
                         <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="interior"> Interiors</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="cave"> Caves/Caverns</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="forest"> Forests</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="battle"> Battle Arenas</label>
+                        <label class="checkbox-item"><input type="checkbox" name="mapTypes" value="battle"> Battle Backgrounds</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label>Typical Map Dimensions</label>
-                    <p class="hint">In tiles (e.g., 17x13 for single-screen)</p>
-                    <div class="grid-2">
-                        <div>
-                            <input type="text" id="mapWidth" placeholder="Width (e.g., 30)" data-question>
-                        </div>
-                        <div>
-                            <input type="text" id="mapHeight" placeholder="Height (e.g., 20)" data-question>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>Layer Usage</label>
-                    <p class="hint">How many tile layers do you plan to use?</p>
-                    <div class="radio-group" data-question data-name="layerUsage">
-                        <label class="radio-item"><input type="radio" name="layerUsage" value="auto"> Automatic (Engine default)</label>
-                        <label class="radio-item"><input type="radio" name="layerUsage" value="2"> 2 layers</label>
-                        <label class="radio-item"><input type="radio" name="layerUsage" value="4"> 4 layers (RMMZ standard)</label>
-                        <label class="radio-item"><input type="radio" name="layerUsage" value="unlimited"> Unlimited (Tiled)</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>Procedural Generation Interest</label>
-                    <div class="radio-group" data-question data-name="procgen">
-                        <label class="radio-item"><input type="radio" name="procgen" value="full"> Full procedural maps</label>
-                        <label class="radio-item"><input type="radio" name="procgen" value="hybrid"> Hybrid (templates + random)</label>
-                        <label class="radio-item"><input type="radio" name="procgen" value="assist"> AI-assisted manual design</label>
-                        <label class="radio-item"><input type="radio" name="procgen" value="manual"> Fully manual design</label>
+                    <label>Map Creation Approach</label>
+                    <div class="radio-group" data-question data-name="mapApproach">
+                        <label class="radio-item"><input type="radio" name="mapApproach" value="manual"> Manual design (full control)</label>
+                        <label class="radio-item"><input type="radio" name="mapApproach" value="procedural"> Procedural generation</label>
+                        <label class="radio-item"><input type="radio" name="mapApproach" value="hybrid"> Hybrid (templates + variation)</label>
+                        <label class="radio-item"><input type="radio" name="mapApproach" value="undecided"> Undecided</label>
                     </div>
                 </div>
 
                 <div class="question-group">
                     <label>Estimated Map Count</label>
                     <div class="radio-group" data-question data-name="mapCount">
-                        <label class="radio-item"><input type="radio" name="mapCount" value="small"> Small (1-10)</label>
-                        <label class="radio-item"><input type="radio" name="mapCount" value="medium"> Medium (10-50)</label>
-                        <label class="radio-item"><input type="radio" name="mapCount" value="large"> Large (50-200)</label>
-                        <label class="radio-item"><input type="radio" name="mapCount" value="massive"> Massive (200+)</label>
+                        <label class="radio-item"><input type="radio" name="mapCount" value="few"> Few (1-20)</label>
+                        <label class="radio-item"><input type="radio" name="mapCount" value="moderate"> Moderate (20-100)</label>
+                        <label class="radio-item"><input type="radio" name="mapCount" value="many"> Many (100+)</label>
                         <label class="radio-item"><input type="radio" name="mapCount" value="infinite"> Infinite (Procedural)</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label for="mapNotes">Map Design Notes</label>
-                    <textarea id="mapNotes" placeholder="Describe your ideal map layouts, flow, or specific requirements..." data-question></textarea>
+                    <label>Layer Complexity</label>
+                    <div class="radio-group" data-question data-name="layerUsage">
+                        <label class="radio-item"><input type="radio" name="layerUsage" value="simple"> Simple (1-2 layers)</label>
+                        <label class="radio-item"><input type="radio" name="layerUsage" value="standard"> Standard (3-4 layers)</label>
+                        <label class="radio-item"><input type="radio" name="layerUsage" value="complex"> Complex (5+ layers)</label>
+                        <label class="radio-item"><input type="radio" name="layerUsage" value="unlimited"> Unlimited</label>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Section 4: Theme & Aesthetics -->
-        <div class="section" data-section="theme">
+        <!-- Section 4: Visual Style -->
+        <div class="section" data-section="visual">
             <div class="section-header" onclick="toggleSection(this)">
                 <div class="section-title">
                     <span class="section-icon">🎨</span>
-                    <span>Theme & Aesthetics</span>
+                    <span>Visual Style</span>
                 </div>
-                <span class="section-badge" data-badge="theme">0/5</span>
+                <span class="section-badge" data-badge="visual">0/3</span>
                 <span class="chevron">▼</span>
             </div>
             <div class="section-content">
                 <div class="question-group">
-                    <label>Primary Setting/Genre</label>
+                    <label>Setting/Genre</label>
                     <div class="checkbox-group" data-question data-name="genre">
-                        <label class="checkbox-item"><input type="checkbox" name="genre" value="fantasy"> High Fantasy</label>
+                        <label class="checkbox-item"><input type="checkbox" name="genre" value="fantasy"> Fantasy</label>
                         <label class="checkbox-item"><input type="checkbox" name="genre" value="dark-fantasy"> Dark Fantasy</label>
                         <label class="checkbox-item"><input type="checkbox" name="genre" value="medieval"> Medieval</label>
                         <label class="checkbox-item"><input type="checkbox" name="genre" value="scifi"> Sci-Fi</label>
-                        <label class="checkbox-item"><input type="checkbox" name="genre" value="steampunk"> Steampunk</label>
                         <label class="checkbox-item"><input type="checkbox" name="genre" value="modern"> Modern</label>
                         <label class="checkbox-item"><input type="checkbox" name="genre" value="horror"> Horror</label>
-                        <label class="checkbox-item"><input type="checkbox" name="genre" value="postapoc"> Post-Apocalyptic</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label>Color Palette Preference</label>
-                    <div class="checkbox-group" data-question data-name="palette">
-                        <label class="checkbox-item"><input type="checkbox" name="palette" value="vibrant"> Vibrant/Saturated</label>
-                        <label class="checkbox-item"><input type="checkbox" name="palette" value="muted"> Muted/Earthy</label>
-                        <label class="checkbox-item"><input type="checkbox" name="palette" value="dark"> Dark/Moody</label>
-                        <label class="checkbox-item"><input type="checkbox" name="palette" value="pastel"> Soft/Pastel</label>
-                        <label class="checkbox-item"><input type="checkbox" name="palette" value="limited"> Limited (GB/NES style)</label>
-                        <label class="checkbox-item"><input type="checkbox" name="palette" value="custom"> Custom palette</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>Atmosphere/Mood</label>
+                    <label>Color/Mood</label>
                     <div class="checkbox-group" data-question data-name="mood">
-                        <label class="checkbox-item"><input type="checkbox" name="mood" value="bright"> Bright & Cheerful</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mood" value="mysterious"> Mysterious</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mood" value="foreboding"> Foreboding/Ominous</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mood" value="cozy"> Cozy/Inviting</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mood" value="desolate"> Desolate/Lonely</label>
-                        <label class="checkbox-item"><input type="checkbox" name="mood" value="epic"> Epic/Grand</label>
+                        <label class="checkbox-item"><input type="checkbox" name="mood" value="vibrant"> Vibrant/Colorful</label>
+                        <label class="checkbox-item"><input type="checkbox" name="mood" value="muted"> Muted/Earthy</label>
+                        <label class="checkbox-item"><input type="checkbox" name="mood" value="dark"> Dark/Moody</label>
+                        <label class="checkbox-item"><input type="checkbox" name="mood" value="pastel"> Soft/Pastel</label>
                     </div>
                 </div>
 
                 <div class="question-group">
                     <label for="references">Visual References</label>
-                    <p class="hint">Games, art, or media that inspire your vision</p>
-                    <textarea id="references" placeholder="e.g., 'Final Fantasy VI towns', 'Dark Souls architecture', 'Studio Ghibli forests'..." data-question></textarea>
-                </div>
-
-                <div class="question-group">
-                    <label for="avoidStyles">Styles to Avoid</label>
-                    <textarea id="avoidStyles" placeholder="Any aesthetics or styles you explicitly don't want..." data-question></textarea>
+                    <p class="hint">Games or art that match what you want</p>
+                    <textarea id="references" placeholder="e.g., 'Chrono Trigger overworlds', 'Dark Souls dungeon atmosphere', 'Stardew Valley buildings'" data-question></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- Section 5: Technical Considerations -->
+        <!-- Section 5: Technical/Export -->
         <div class="section" data-section="technical">
             <div class="section-header" onclick="toggleSection(this)">
                 <div class="section-title">
                     <span class="section-icon">⚙️</span>
-                    <span>Technical Considerations</span>
+                    <span>Technical Requirements</span>
                 </div>
-                <span class="section-badge" data-badge="technical">0/5</span>
+                <span class="section-badge" data-badge="technical">0/3</span>
                 <span class="chevron">▼</span>
             </div>
             <div class="section-content">
                 <div class="question-group">
+                    <label>Export Format Needed</label>
+                    <div class="checkbox-group" data-question data-name="exportFormat">
+                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="png"> PNG tileset images</label>
+                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="rmmz"> RMMZ-ready format</label>
+                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="tiled"> Tiled TMX/JSON</label>
+                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="ldtk"> LDtk</label>
+                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="godot"> Godot tileset</label>
+                    </div>
+                </div>
+
+                <div class="question-group">
                     <label>Collision/Passability</label>
                     <div class="radio-group" data-question data-name="collision">
-                        <label class="radio-item"><input type="radio" name="collision" value="tile"> Tile-based (full tile)</label>
+                        <label class="radio-item"><input type="radio" name="collision" value="tile"> Tile-based</label>
                         <label class="radio-item"><input type="radio" name="collision" value="pixel"> Pixel-perfect</label>
-                        <label class="radio-item"><input type="radio" name="collision" value="directional"> Directional (4-way)</label>
-                        <label class="radio-item"><input type="radio" name="collision" value="custom"> Custom collision maps</label>
+                        <label class="radio-item"><input type="radio" name="collision" value="custom"> Custom collision shapes</label>
+                        <label class="radio-item"><input type="radio" name="collision" value="na"> N/A / Engine handles it</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label>Height/Elevation</label>
-                    <div class="radio-group" data-question data-name="elevation">
-                        <label class="radio-item"><input type="radio" name="elevation" value="flat"> Flat (2D only)</label>
-                        <label class="radio-item"><input type="radio" name="elevation" value="visual"> Visual height only</label>
-                        <label class="radio-item"><input type="radio" name="elevation" value="mz3d"> MZ3D compatible</label>
-                        <label class="radio-item"><input type="radio" name="elevation" value="full3d"> Full 3D heightmaps</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>Lighting Requirements</label>
-                    <div class="checkbox-group" data-question data-name="lighting">
-                        <label class="checkbox-item"><input type="checkbox" name="lighting" value="none"> None (static)</label>
-                        <label class="checkbox-item"><input type="checkbox" name="lighting" value="shadows"> Shadow layer</label>
-                        <label class="checkbox-item"><input type="checkbox" name="lighting" value="dynamic"> Dynamic lighting</label>
-                        <label class="checkbox-item"><input type="checkbox" name="lighting" value="daynight"> Day/Night cycle</label>
-                        <label class="checkbox-item"><input type="checkbox" name="lighting" value="fog"> Fog of war</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label>Export Format</label>
-                    <div class="checkbox-group" data-question data-name="exportFormat">
-                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="rmmz-json"> RMMZ JSON</label>
-                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="tiled-tmx"> Tiled TMX</label>
-                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="png"> PNG tileset</label>
-                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="ldtk"> LDtk</label>
-                        <label class="checkbox-item"><input type="checkbox" name="exportFormat" value="other"> Other</label>
-                    </div>
-                </div>
-
-                <div class="question-group">
-                    <label for="technicalNotes">Technical Constraints</label>
-                    <textarea id="technicalNotes" placeholder="Any performance requirements, plugin compatibility needs, or platform limitations..." data-question></textarea>
+                    <label for="technicalNotes">Other Technical Needs</label>
+                    <textarea id="technicalNotes" placeholder="Any plugins, specific requirements, or constraints..." data-question></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- Section 6: Priorities & Timeline -->
+        <!-- Section 6: Priorities -->
         <div class="section" data-section="priorities">
             <div class="section-header" onclick="toggleSection(this)">
                 <div class="section-title">
                     <span class="section-icon">📋</span>
-                    <span>Priorities & Context</span>
+                    <span>Priorities</span>
                 </div>
-                <span class="section-badge" data-badge="priorities">0/4</span>
+                <span class="section-badge" data-badge="priorities">0/3</span>
                 <span class="chevron">▼</span>
             </div>
             <div class="section-content">
                 <div class="question-group">
-                    <label>What matters most?</label>
-                    <p class="hint">Rank your top 3 priorities</p>
+                    <label>What matters most? (Pick top 3)</label>
                     <div class="checkbox-group" data-question data-name="priorities">
                         <label class="checkbox-item"><input type="checkbox" name="priorities" value="speed"> Speed of creation</label>
                         <label class="checkbox-item"><input type="checkbox" name="priorities" value="quality"> Visual quality</label>
                         <label class="checkbox-item"><input type="checkbox" name="priorities" value="consistency"> Style consistency</label>
                         <label class="checkbox-item"><input type="checkbox" name="priorities" value="uniqueness"> Uniqueness</label>
-                        <label class="checkbox-item"><input type="checkbox" name="priorities" value="flexibility"> Flexibility/Reusability</label>
-                        <label class="checkbox-item"><input type="checkbox" name="priorities" value="performance"> Performance</label>
+                        <label class="checkbox-item"><input type="checkbox" name="priorities" value="ease"> Ease of use</label>
+                        <label class="checkbox-item"><input type="checkbox" name="priorities" value="cost"> Low/no cost</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label>Experience Level</label>
+                    <label>Experience with Tileset Tools</label>
                     <div class="radio-group" data-question data-name="experience">
-                        <label class="radio-item"><input type="radio" name="experience" value="beginner"> Beginner</label>
-                        <label class="radio-item"><input type="radio" name="experience" value="intermediate"> Intermediate</label>
-                        <label class="radio-item"><input type="radio" name="experience" value="advanced"> Advanced</label>
-                        <label class="radio-item"><input type="radio" name="experience" value="expert"> Expert/Professional</label>
+                        <label class="radio-item"><input type="radio" name="experience" value="none"> None - completely new</label>
+                        <label class="radio-item"><input type="radio" name="experience" value="some"> Some - used a few</label>
+                        <label class="radio-item"><input type="radio" name="experience" value="experienced"> Experienced</label>
                     </div>
                 </div>
 
                 <div class="question-group">
-                    <label for="challenges">Current Challenges</label>
-                    <p class="hint">What problems are you trying to solve?</p>
-                    <textarea id="challenges" placeholder="e.g., 'I struggle with making interesting dungeon layouts', 'My tilesets don't tile seamlessly'..." data-question></textarea>
-                </div>
-
-                <div class="question-group">
-                    <label for="additionalNotes">Anything Else?</label>
-                    <textarea id="additionalNotes" placeholder="Any other information that would help understand your needs..." data-question></textarea>
+                    <label for="toolsConsidering">Tools You're Considering</label>
+                    <p class="hint">What tools are you thinking about testing?</p>
+                    <textarea id="toolsConsidering" placeholder="e.g., Crocotile 3D, Tiled, Aseprite, PyxelEdit, built-in RMMZ editor..." data-question></textarea>
                 </div>
             </div>
         </div>
 
         <div class="info-box">
-            <strong>How this works:</strong> Fill out as much as you can, then click "Copy Response" to share your answers. This helps establish a foundation for tileset and map creation discussions.
+            <strong>Output:</strong> Click "Copy Response" to get your requirements summary + a tool evaluation checklist. Share it with your team or use it when testing tools.
         </div>
 
         <div class="actions">
             <button class="btn-primary" onclick="copyResponse()">
-                <span>📋</span> Copy Response
+                <span>📋</span> Copy Response + Checklist
             </button>
             <button class="btn-secondary" onclick="clearForm()">Clear All</button>
         </div>
@@ -763,19 +738,16 @@
 
     <footer>
         <p>Part of the <a href="index.html">FAeN Pages</a> collection</p>
-        <p>Based on the <a href="https://www.redblobgames.com/articles/autotile/index-claudestatico.html" target="_blank">47-tile blob pattern</a></p>
     </footer>
 
-    <div class="toast" id="toast">Response copied to clipboard!</div>
+    <div class="toast" id="toast">Copied to clipboard!</div>
 
     <script>
-        // Toggle section open/closed
         function toggleSection(header) {
             const section = header.closest('.section');
             section.classList.toggle('open');
         }
 
-        // Handle checkbox/radio selection styling
         document.querySelectorAll('.checkbox-item, .radio-item').forEach(item => {
             const input = item.querySelector('input');
             input.addEventListener('change', () => {
@@ -791,23 +763,20 @@
             });
         });
 
-        // Track text inputs
         document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(input => {
             input.addEventListener('input', updateProgress);
         });
 
-        // Update progress bar
         function updateProgress() {
             const sections = {
                 overview: { total: 4, answered: 0 },
-                tileset: { total: 6, answered: 0 },
-                maps: { total: 6, answered: 0 },
-                theme: { total: 5, answered: 0 },
-                technical: { total: 5, answered: 0 },
-                priorities: { total: 4, answered: 0 }
+                tileset: { total: 5, answered: 0 },
+                maps: { total: 4, answered: 0 },
+                visual: { total: 3, answered: 0 },
+                technical: { total: 3, answered: 0 },
+                priorities: { total: 3, answered: 0 }
             };
 
-            // Count text inputs
             document.querySelectorAll('[data-question]').forEach(el => {
                 const section = el.closest('.section')?.dataset.section;
                 if (!section) return;
@@ -822,7 +791,6 @@
                 }
             });
 
-            // Update badges
             Object.keys(sections).forEach(key => {
                 const badge = document.querySelector(`[data-badge="${key}"]`);
                 if (badge) {
@@ -831,7 +799,6 @@
                 }
             });
 
-            // Update overall progress
             let totalAnswered = 0;
             let totalQuestions = 0;
             Object.values(sections).forEach(s => {
@@ -844,65 +811,189 @@
             document.getElementById('progressFill').style.width = `${(totalAnswered / totalQuestions) * 100}%`;
         }
 
-        // Generate formatted response
-        function generateResponse() {
-            let response = `# Tileset & Map Creation - Response\n\n`;
-            response += `**Generated:** ${new Date().toLocaleDateString()}\n\n`;
-
-            // Project Overview
-            response += `## Project Overview\n`;
-            response += `- **Project Name:** ${document.getElementById('projectName').value || 'Not specified'}\n`;
-            response += `- **Project Type:** ${getSelectedValues('projectType').join(', ') || 'Not specified'}\n`;
-            response += `- **Primary Goal:** ${getSelectedValues('projectGoal').join(', ') || 'Not specified'}\n`;
-            response += `- **Scope:** ${document.getElementById('projectScope').value || 'Not specified'}\n\n`;
-
-            // Tileset Requirements
-            response += `## Tileset Requirements\n`;
-            response += `- **Tile Size:** ${getSelectedValues('tileSize').join(', ') || 'Not specified'}\n`;
-            response += `- **Art Style:** ${getSelectedValues('artStyle').join(', ') || 'Not specified'}\n`;
-            response += `- **Tileset Types:** ${getSelectedValues('tilesetTypes').join(', ') || 'Not specified'}\n`;
-            response += `- **Autotile Requirements:** ${getSelectedValues('autotileReq').join(', ') || 'Not specified'}\n`;
-            response += `- **Animation Needs:** ${getSelectedValues('animationNeeds').join(', ') || 'Not specified'}\n`;
-            response += `- **Notes:** ${document.getElementById('tilesetNotes').value || 'None'}\n\n`;
-
-            // Map Specifications
-            response += `## Map Specifications\n`;
-            response += `- **Map Types:** ${getSelectedValues('mapTypes').join(', ') || 'Not specified'}\n`;
-            response += `- **Dimensions:** ${document.getElementById('mapWidth').value || '?'} x ${document.getElementById('mapHeight').value || '?'} tiles\n`;
-            response += `- **Layer Usage:** ${getSelectedValues('layerUsage').join(', ') || 'Not specified'}\n`;
-            response += `- **Procedural Generation:** ${getSelectedValues('procgen').join(', ') || 'Not specified'}\n`;
-            response += `- **Estimated Map Count:** ${getSelectedValues('mapCount').join(', ') || 'Not specified'}\n`;
-            response += `- **Notes:** ${document.getElementById('mapNotes').value || 'None'}\n\n`;
-
-            // Theme & Aesthetics
-            response += `## Theme & Aesthetics\n`;
-            response += `- **Genre/Setting:** ${getSelectedValues('genre').join(', ') || 'Not specified'}\n`;
-            response += `- **Color Palette:** ${getSelectedValues('palette').join(', ') || 'Not specified'}\n`;
-            response += `- **Mood/Atmosphere:** ${getSelectedValues('mood').join(', ') || 'Not specified'}\n`;
-            response += `- **Visual References:** ${document.getElementById('references').value || 'None'}\n`;
-            response += `- **Styles to Avoid:** ${document.getElementById('avoidStyles').value || 'None'}\n\n`;
-
-            // Technical
-            response += `## Technical Considerations\n`;
-            response += `- **Collision Type:** ${getSelectedValues('collision').join(', ') || 'Not specified'}\n`;
-            response += `- **Elevation/Height:** ${getSelectedValues('elevation').join(', ') || 'Not specified'}\n`;
-            response += `- **Lighting:** ${getSelectedValues('lighting').join(', ') || 'Not specified'}\n`;
-            response += `- **Export Format:** ${getSelectedValues('exportFormat').join(', ') || 'Not specified'}\n`;
-            response += `- **Technical Notes:** ${document.getElementById('technicalNotes').value || 'None'}\n\n`;
-
-            // Priorities
-            response += `## Priorities & Context\n`;
-            response += `- **Top Priorities:** ${getSelectedValues('priorities').join(', ') || 'Not specified'}\n`;
-            response += `- **Experience Level:** ${getSelectedValues('experience').join(', ') || 'Not specified'}\n`;
-            response += `- **Current Challenges:** ${document.getElementById('challenges').value || 'None'}\n`;
-            response += `- **Additional Notes:** ${document.getElementById('additionalNotes').value || 'None'}\n`;
-
-            return response;
-        }
-
         function getSelectedValues(name) {
             const inputs = document.querySelectorAll(`input[name="${name}"]:checked`);
             return Array.from(inputs).map(i => i.value);
+        }
+
+        function getSelectedLabels(name) {
+            const inputs = document.querySelectorAll(`input[name="${name}"]:checked`);
+            return Array.from(inputs).map(i => i.closest('label').textContent.trim());
+        }
+
+        function generateResponse() {
+            const projectName = document.getElementById('projectName').value || 'Untitled Project';
+            const projectType = getSelectedLabels('projectType')[0] || 'Not specified';
+            const teamSize = getSelectedLabels('teamSize')[0] || 'Not specified';
+            const projectScope = document.getElementById('projectScope').value || 'Not specified';
+
+            const tileSize = getSelectedValues('tileSize')[0] || '';
+            const tileSizeLabel = getSelectedLabels('tileSize')[0] || 'Not specified';
+            const artStyles = getSelectedLabels('artStyle');
+            const autotileReq = getSelectedValues('autotileReq')[0] || '';
+            const autotileLabel = getSelectedLabels('autotileReq')[0] || 'Not specified';
+            const animations = getSelectedLabels('animationNeeds');
+            const tilesetTypes = getSelectedLabels('tilesetTypes');
+
+            const mapTypes = getSelectedLabels('mapTypes');
+            const mapApproach = getSelectedLabels('mapApproach')[0] || 'Not specified';
+            const mapCount = getSelectedLabels('mapCount')[0] || 'Not specified';
+            const layerUsage = getSelectedLabels('layerUsage')[0] || 'Not specified';
+
+            const genres = getSelectedLabels('genre');
+            const moods = getSelectedLabels('mood');
+            const references = document.getElementById('references').value || 'None';
+
+            const exportFormats = getSelectedLabels('exportFormat');
+            const exportValues = getSelectedValues('exportFormat');
+            const collision = getSelectedLabels('collision')[0] || 'Not specified';
+            const technicalNotes = document.getElementById('technicalNotes').value || 'None';
+
+            const priorities = getSelectedLabels('priorities');
+            const experience = getSelectedLabels('experience')[0] || 'Not specified';
+            const toolsConsidering = document.getElementById('toolsConsidering').value || 'None listed';
+
+            // Build response
+            let response = `# ${projectName} - Tileset & Map Requirements\n\n`;
+            response += `**Generated:** ${new Date().toLocaleDateString()}\n\n`;
+
+            response += `## Project Overview\n`;
+            response += `- **Target Engine:** ${projectType}\n`;
+            response += `- **Team Size:** ${teamSize}\n`;
+            response += `- **Description:** ${projectScope}\n\n`;
+
+            response += `## Tileset Requirements\n`;
+            response += `- **Tile Size:** ${tileSizeLabel}\n`;
+            response += `- **Art Style:** ${artStyles.join(', ') || 'Not specified'}\n`;
+            response += `- **Autotiles:** ${autotileLabel}\n`;
+            response += `- **Animations:** ${animations.join(', ') || 'None'}\n`;
+            response += `- **Environments:** ${tilesetTypes.join(', ') || 'Not specified'}\n\n`;
+
+            response += `## Map Requirements\n`;
+            response += `- **Map Types:** ${mapTypes.join(', ') || 'Not specified'}\n`;
+            response += `- **Creation Approach:** ${mapApproach}\n`;
+            response += `- **Estimated Count:** ${mapCount}\n`;
+            response += `- **Layer Complexity:** ${layerUsage}\n\n`;
+
+            response += `## Visual Style\n`;
+            response += `- **Genre:** ${genres.join(', ') || 'Not specified'}\n`;
+            response += `- **Mood:** ${moods.join(', ') || 'Not specified'}\n`;
+            response += `- **References:** ${references}\n\n`;
+
+            response += `## Technical\n`;
+            response += `- **Export Formats:** ${exportFormats.join(', ') || 'Not specified'}\n`;
+            response += `- **Collision:** ${collision}\n`;
+            response += `- **Notes:** ${technicalNotes}\n\n`;
+
+            response += `## Priorities\n`;
+            response += `- **Top Priorities:** ${priorities.join(', ') || 'Not specified'}\n`;
+            response += `- **Experience Level:** ${experience}\n`;
+            response += `- **Tools Considering:** ${toolsConsidering}\n\n`;
+
+            // Generate the evaluation checklist
+            response += `---\n\n`;
+            response += `# Tool Evaluation Checklist\n\n`;
+            response += `Use this when testing tools. A tool that checks most boxes is a good fit.\n\n`;
+
+            response += `## Must Support\n`;
+
+            // Tile size
+            if (tileSize && tileSize !== 'custom') {
+                response += `- [ ] Outputs ${tileSize}x${tileSize} pixel tiles\n`;
+            } else if (tileSize === 'custom') {
+                response += `- [ ] Supports custom/flexible tile sizes\n`;
+            }
+
+            // Art style
+            if (artStyles.length > 0) {
+                artStyles.forEach(style => {
+                    response += `- [ ] Suitable for ${style.toLowerCase()} creation\n`;
+                });
+            }
+
+            // Autotiles
+            if (autotileReq === 'essential') {
+                response += `- [ ] Can generate 47-tile autotile sets (blob pattern)\n`;
+                response += `- [ ] Supports A1-A4 tileset formats (water, ground, walls, dungeons)\n`;
+            } else if (autotileReq === 'basic') {
+                response += `- [ ] Can generate 16-tile wall autotiles\n`;
+            }
+
+            // Animations
+            if (animations.length > 0 && !animations.includes('None needed')) {
+                response += `- [ ] Supports animated tiles (`;
+                response += animations.filter(a => a !== 'None needed').join(', ').toLowerCase();
+                response += `)\n`;
+            }
+
+            // Export formats
+            if (exportValues.length > 0) {
+                exportValues.forEach(format => {
+                    const formatNames = {
+                        'png': 'PNG tileset images',
+                        'rmmz': 'RPG Maker MZ format',
+                        'tiled': 'Tiled TMX/JSON',
+                        'ldtk': 'LDtk format',
+                        'godot': 'Godot tileset format'
+                    };
+                    response += `- [ ] Exports to ${formatNames[format] || format}\n`;
+                });
+            }
+
+            response += `\n## Nice to Have\n`;
+
+            // Based on priorities
+            if (priorities.includes('Speed of creation')) {
+                response += `- [ ] Fast workflow / batch operations\n`;
+            }
+            if (priorities.includes('Ease of use')) {
+                response += `- [ ] Intuitive interface / good documentation\n`;
+            }
+            if (priorities.includes('Low/no cost')) {
+                response += `- [ ] Free or affordable\n`;
+            }
+
+            // Map approach
+            if (mapApproach.includes('Procedural') || mapApproach.includes('Hybrid')) {
+                response += `- [ ] Supports procedural/random generation\n`;
+            }
+
+            // Layers
+            if (layerUsage.includes('Complex') || layerUsage.includes('Unlimited')) {
+                response += `- [ ] Supports multiple layers (5+)\n`;
+            }
+
+            response += `\n## Team Considerations\n`;
+            if (teamSize !== 'Solo' && teamSize !== 'Not specified') {
+                response += `- [ ] Multiple people can use it (licensing)\n`;
+                response += `- [ ] Easy to share/collaborate on files\n`;
+                response += `- [ ] Consistent output between users\n`;
+            } else {
+                response += `- [ ] Single-user workflow is fine\n`;
+            }
+
+            response += `\n## Test With\n`;
+            response += `When evaluating, try creating:\n`;
+            if (tilesetTypes.includes('Exterior - Nature/Terrain')) {
+                response += `- [ ] A grass/dirt terrain with proper edge transitions\n`;
+            }
+            if (tilesetTypes.includes('Dungeons/Caves')) {
+                response += `- [ ] A dungeon wall/floor set with corners\n`;
+            }
+            if (tilesetTypes.includes('Exterior - Towns/Buildings')) {
+                response += `- [ ] A building exterior with roof\n`;
+            }
+            if (tilesetTypes.includes('Interior')) {
+                response += `- [ ] An interior room with furniture placement\n`;
+            }
+            if (animations.length > 0 && !animations.includes('None needed')) {
+                response += `- [ ] An animated tile (water/lava/etc)\n`;
+            }
+
+            response += `\n---\n`;
+            response += `*Share results back with the team after testing!*\n`;
+
+            return response;
         }
 
         function copyResponse() {
@@ -932,7 +1023,6 @@
             }
         }
 
-        // Initialize
         updateProgress();
     </script>
 </body>
